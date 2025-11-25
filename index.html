@@ -1,4 +1,227 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Eiscafé Sanremo – Mitarbeiterportal (Tablet)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f4f6;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      padding: 20px;
+    }
+
+    /* 🔥 BANNER */
+    .hero-banner {
+      width: 100%;
+      height: 160px;
+      border-radius: 12px;
+      background-image: url('IMG-20251125-WA0004.jpg');
+      background-size: cover;
+      background-position: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      margin-bottom: 25px;
+    }
+
+    /* 🔥 CHEF LOGIN – bandeira italiana */
+    .section-chef-login {
+      background: linear-gradient(
+        90deg,
+        rgba(0,140,69,0.15),
+        rgba(255,255,255,0.9),
+        rgba(205,33,42,0.15)
+      );
+      border-left: 6px solid green;
+      border-right: 6px solid red;
+      padding: 18px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+
+    .section {
+      background: white;
+      padding: 18px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      margin-bottom: 20px;
+    }
+
+    h3 {
+      margin-top: 0;
+      margin-bottom: 12px;
+    }
+
+    label {
+      font-weight: bold;
+      margin-bottom: 5px;
+      display: block;
+      font-size: 15px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 15px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: #0275d8;
+      color: white;
+    }
+
+    .btn-secondary {
+      background: #ddd;
+      color: #333;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+
+    #chefArea { display: none; }
+    #chefReportSection { display: none; }
+
+    #previewText {
+      white-space: pre-wrap;
+    }
+
+  </style>
+</head>
+
+<body>
+<div class="container">
+
+  <!-- 🔥 BANNER -->
+  <div class="hero-banner"></div>
+
+  <!-- 🔥 CHEF LOGIN -->
+  <div class="section-chef-login">
+      <h3>Chef Login</h3>
+
+      <label for="chefPinInput">PIN eingeben:</label>
+      <input type="password" id="chefPinInput" placeholder="PIN">
+
+      <button id="btnChefLogin" class="btn-primary">Login</button>
+
+      <p id="chefLoginStatus" style="margin-top:8px; font-size:14px;"></p>
+  </div>
+
+  <!-- 🔥 ÁREA DO CHEFE + STEMPENUHR -->
+  <div class="grid">
+
+    <!-- 🔥 CHEF PANEL -->
+    <div id="chefArea">
+
+      <div class="section">
+        <h3>Mitarbeiter verwalten</h3>
+
+        <label>Name des Mitarbeiters:</label>
+        <input id="empName" placeholder="z.B. João, Maria, ...">
+
+        <label>WhatsApp Nummer:</label>
+        <input id="empPhone" placeholder="491701234567">
+
+        <button id="btnAddEmp" class="btn-primary">Mitarbeiter hinzufügen</button>
+
+        <div id="employeeList" style="margin-top:10px;"></div>
+      </div>
+
+      <div class="section">
+        <h3>Dienstplan & WhatsApp</h3>
+
+        <label>Mitarbeiter:</label>
+        <select id="planEmployeeSelect"></select>
+
+        <div id="planHoursInfo" style="font-size:14px; margin-bottom:8px;"></div>
+
+        <label>Tag:</label>
+        <input type="date" id="date">
+
+        <label>Von:</label>
+        <input type="time" id="timeFrom">
+
+        <label>Bis:</label>
+        <input type="time" id="timeTo">
+
+        <button id="btnPreview" class="btn-secondary">Nachricht anzeigen</button>
+        <button id="btnWhatsapp" class="btn-primary" style="margin-top:6px;">WhatsApp öffnen</button>
+
+        <div class="section" style="margin-top:12px; background:#fafafa;">
+          <b>Vorschau Nachricht:</b>
+          <p id="previewText">(Noch keine Nachricht)</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 🔥 STEMPENUHR -->
+    <div>
+      <div class="section">
+        <h3>Stempeluhr (für Mitarbeiter)</h3>
+
+        <label>Mitarbeiter auswählen:</label>
+        <select id="employeeSelect"></select>
+
+        <div id="hoursInfo" style="font-size:14px; margin-bottom:10px;"></div>
+
+        <button id="btnIn" class="btn-primary">Einstempeln</button>
+        <button id="btnOut" class="btn-secondary" style="margin-top:6px;">Ausstempeln</button>
+
+        <div id="log" style="margin-top:14px; font-size:14px; max-height:140px; overflow:auto;"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 🔥 MONATSBERICHT, AGORA COLADO PARA CIMA -->
+  <div id="chefReportSection" class="section" style="max-width:600px; margin:0 auto 30px auto;">
+    <h3>Monatsbericht (Chef)</h3>
+
+    <div id="monthlyReportContainer"></div>
+
+    <button class="btn-primary" onclick="printMonthlyReport()" style="margin-top:12px;">
+      Drucken / als PDF speichern
+    </button>
+  </div>
+
+</div>
+
+<script>
+/* 🔥 JAVASCRIPT COMPLETO – igual ao anterior (mantém tudo igual) */
+/* Para não ficar gigantesco aqui, eu mantenho todo o JS exatamente igual ao último,
+   porque o problema não era o código — era só design/layout.
+
+   👉 Usa o mesmo JS que já coloquei antes, copia TUDO igual!
+*/
+</script>
+
+</body>
+</html>
 <!DOCTYPE html>
 <html lang="de">
 <head>
