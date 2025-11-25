@@ -5,11 +5,7 @@
   <meta charset="UTF-8">
   <title>Eiscafé Sanremo – Mitarbeiterportal (Tablet & Handy)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Farbe der Browserleiste / App-Thema -->
   <meta name="theme-color" content="#f0f2f5">
-
-  <!-- Manifest für die App-Installation (PWA) -->
   <link rel="manifest" href="manifest.json">
 
   <style>
@@ -25,8 +21,8 @@
       min-height: 100vh;
     }
 
-    h3 { 
-      margin-top: 0; 
+    h3 {
+      margin-top: 0;
       margin-bottom: 16px;
     }
 
@@ -84,14 +80,14 @@
     .section-chef-login {
       background: linear-gradient(
         135deg,
-        rgba(0,140,69,0.18),
-        rgba(244,245,240,0.95),
-        rgba(205,33,42,0.22)
+        rgba(0,140,69,0.18),     /* verde Itália */
+        rgba(244,245,240,0.95),  /* branco claro */
+        rgba(205,33,42,0.22)     /* vermelho Itália */
       );
       border-color: #ccc;
     }
     .section-chef-login-inner {
-      background: rgba(255,255,255,0.88);
+      background: rgba(255,255,255,0.9);
       padding: 14px 16px;
       border-radius: 10px;
     }
@@ -156,7 +152,7 @@
       }
     }
 
-    /* HERO BANNER COM FOTO SEM TEXTO POR CIMA */
+    /* BANNER COM FOTO (sem texto por cima) */
     .hero-banner {
       position: relative;
       margin-bottom: 20px;
@@ -169,7 +165,7 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.15);
     }
 
-    /* Monatsbericht em baixo centrado */
+    /* Monatsbericht em baixo, centrado */
     #chefReportSection {
       max-width: 540px;
       margin: 20px auto 40px auto;
@@ -178,10 +174,10 @@
 </head>
 <body>
 
-  <!-- BANNER GRANDE COM FOTO (SEM TEXTO) -->
+  <!-- BANNER SÓ COM A FOTO -->
   <header class="hero-banner"></header>
 
-  <!-- LOGIN DO CHEFE COM CORES DA BANDEIRA ITALIANA -->
+  <!-- LOGIN DO CHEFE COM CORES DA ITÁLIA -->
   <div class="section section-chef-login">
     <div class="section-chef-login-inner">
       <h3>Chef Login</h3>
@@ -269,7 +265,7 @@
       </div>
     </div>
 
-    <!-- SECÇÃO: Stempeluhr – para os empregados (sempre visível) -->
+    <!-- STEMPELUHR – sempre visível -->
     <div>
       <div class="section">
         <h3>Stempeluhr (für Mitarbeiter)</h3>
@@ -301,7 +297,7 @@
     </div>
   </div>
 
-  <!-- MONATSBERICHT (CHEF) AGORA EM BAIXO, CENTRADO -->
+  <!-- MONATSBERICHT (CHEF) EM BAIXO, CENTRADO -->
   <div id="chefReportSection" class="section" style="display:none;">
     <h3>Monatsbericht (Chef)</h3>
     <p style="font-size: 13px; margin-bottom:8px;">
@@ -748,7 +744,6 @@
     renderMonthlyReport();
   </script>
 
-  <!-- Registo do Service Worker para modo App (PWA) -->
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js').catch(function (err) {
