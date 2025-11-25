@@ -13,7 +13,6 @@
       margin: 0 auto;
       background: #f0f2f5;
     }
-    h2 { margin-bottom: 10px; }
     h3 { margin-top: 20px; }
 
     label {
@@ -112,16 +111,16 @@
       color: #555;
     }
 
-    /* LOGO NO TOPO */
+    /* CABEÇALHO COM LOGÓTIPO "HORIZONTAL" (LOGO + TEXTO AO LADO) */
     .header {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 16px;
       margin-bottom: 10px;
     }
     .logo-img {
       height: 70px;
-      max-width: 220px;
+      width: auto;
       object-fit: contain;
     }
     .logo-text-sub {
@@ -140,10 +139,9 @@
 </head>
 <body>
 
-  <!-- LOGÓTIPO HORIZONTAL -->
+  <!-- LOGÓTIPO + TEXTO (horizontal no topo) -->
   <div class="header">
-    <!-- imagem dentro da pasta images -->
-    <img src="images/sanremo-logo-horizontal.png" alt="Eiscafé Sanremo Logo" class="logo-img">
+    <img src="images/sanremo-logo.png" alt="Eiscafé Sanremo Logo" class="logo-img">
     <div>
       <div class="logo-text-sub">Mitarbeiterportal – Stempeluhr & Dienstplan</div>
     </div>
@@ -268,9 +266,7 @@
   </div>
 
   <script>
-    // =========================
-    //  CONFIG LOGIN DO CHEFE
-    // =========================
+    // ============ CONFIG LOGIN DO CHEFE ============
     // ⚠️ MUDA ESTE PIN PARA UM QUE SÓ TU SABES
     const CHEF_PIN = "1234";
 
@@ -292,10 +288,7 @@
       }
     });
 
-    // =========================
-    //  Dados & armazenamento
-    // =========================
-
+    // ============ DADOS & ARMAZENAMENTO ============
     let employees = [];
 
     function loadEmployees() {
@@ -315,10 +308,7 @@
       return 'emp_' + Math.random().toString(36).substring(2, 9);
     }
 
-    // =========================
-    //  Elementos do DOM
-    // =========================
-
+    // ============ ELEMENTOS DO DOM ============
     const empNameInput = document.getElementById('empName');
     const empPhoneInput = document.getElementById('empPhone');
     const btnAddEmp = document.getElementById('btnAddEmp');
@@ -340,12 +330,9 @@
     const btnWhatsapp = document.getElementById('btnWhatsapp');
     const previewText = document.getElementById('previewText');
 
-    const MAX_HOURS_PER_MONTH = 40; // regra: 40h/mês
+    const MAX_HOURS_PER_MONTH = 40;
 
-    // =========================
-    //  Helpers de data / horas
-    // =========================
-
+    // ============ HELPERS DE DATA/HORA ============
     function getCurrentMonthKey() {
       const now = new Date();
       const y = now.getFullYear();
@@ -364,10 +351,51 @@
       });
     }
 
-    // =========================
-    //  UI de empregados (Chef)
-    // =========================
+    // ============ HORAS & BANCO ============
+    function getHoursAndBank(emp) {
+      const monthKey = getCurrentMonthKey();
+      const total = (emp.monthlyHours && emp.monthlyHours[monthKey]) || 0;
+      const bank = (emp.timeBank && emp.timeBank[monthKey]) || 0;
+      return { total, bank };
+    }
 
+    function updateHoursInfo() {
+      const empId = employeeSelect.value;
+      const emp = employees.find(e => e.id === empId);
+      if (!emp) {
+        hoursInfoEl.innerHTML = 'Stunden diesen Monat: 0 | Überstundenkonto: 0';
+        return;
+      }
+      const { total, bank } = getHoursAndBank(emp);
+      let text = `Stunden diesen Monat: ${total.toFixed(2)} | Überstundenkonto: ${bank.toFixed(2)}`;
+      if (total > MAX_HOURS_PER_MONTH) {
+        text += ' – <span class="warning">Limit 40h überschritten!</span>';
+      }
+      hoursInfoEl.innerHTML = text;
+    }
+
+    function updatePlanHoursInfo() {
+      const empId = planEmployeeSelect.value;
+      const emp = employees.find(e => e.id === empId);
+      if (!emp) {
+        planHoursInfoEl.innerHTML = 'Stunden diesen Monat: 0 | Überstundenkonto: 0';
+        return;
+      }
+      const { total, bank } = getHoursAndBank(emp);
+      let text = `Stunden diesen Monat: ${total.toFixed(2)} | Überstundenkonto: ${bank.toFixed(2)}`;
+      if (total > MAX_HOURS_PER_MONTH) {
+        text += ' – <span class="warning">Limit 40h überschritten!</span>';
+      }
+      planHoursInfoEl.innerHTML = text;
+    }
+
+    function addLog(text) {
+      const now = new Date().toLocaleString();
+      logEl.innerHTML += `${text} – <i>${now}</i><br>`;
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    // ============ UI DE EMPREGADOS ============
     function refreshEmployeeUI() {
       // Select da Stempeluhr
       employeeSelect.innerHTML = '<option value="">-- Mitarbeiter wählen --</option>';
@@ -420,71 +448,7 @@
       }
     }
 
-    if (btnAddEmp) {
-      btnAddEmp.addEventListener('click', () => {
-        const name = empNameInput.value.trim();
-        const phone = empPhoneInput.value.trim();
-        if (!name) {
-          alert('Bitte einen Namen eingeben.');
-          return;
-        }
-        const emp = {
-          id: generateId(),
-          name,
-          phone: phone || '',
-          monthlyHours: {},   // { "2025-11": 23.5, ... }
-          timeBank: {},       // { "2025-11": 3.5, ... }
-          activeSessionStart: null
-        };
-        employees.push(emp);
-        saveEmployees();
-        empNameInput.value = '';
-        empPhoneInput.value = '';
-        refreshEmployeeUI();
-      });
-    }
-
-    // =========================
-    //  Info de horas / banco
-    // =========================
-
-    function getHoursAndBank(emp) {
-      const monthKey = getCurrentMonthKey();
-      const total = (emp.monthlyHours && emp.monthlyHours[monthKey]) || 0;
-      const bank = (emp.timeBank && emp.timeBank[monthKey]) || 0;
-      return { total, bank };
-    }
-
-    function updateHoursInfo() {
-      const empId = employeeSelect.value;
-      const emp = employees.find(e => e.id === empId);
-      if (!emp) {
-        hoursInfoEl.innerHTML = 'Stunden diesen Monat: 0 | Überstundenkonto: 0';
-        return;
-      }
-      const { total, bank } = getHoursAndBank(emp);
-      let text = `Stunden diesen Monat: ${total.toFixed(2)} | Überstundenkonto: ${bank.toFixed(2)}`;
-      if (total > MAX_HOURS_PER_MONTH) {
-        text += ' – <span class="warning">Limit 40h überschritten!</span>';
-      }
-      hoursInfoEl.innerHTML = text;
-    }
-
-    function updatePlanHoursInfo() {
-      const empId = planEmployeeSelect.value;
-      const emp = employees.find(e => e.id === empId);
-      if (!emp) {
-        planHoursInfoEl.innerHTML = 'Stunden diesen Monat: 0 | Überstundenkonto: 0';
-        return;
-      }
-      const { total, bank } = getHoursAndBank(emp);
-      let text = `Stunden diesen Monat: ${total.toFixed(2)} | Überstundenkonto: ${bank.toFixed(2)}`;
-      if (total > MAX_HOURS_PER_MONTH) {
-        text += ' – <span class="warning">Limit 40h überschritten!</span>';
-      }
-      planHoursInfoEl.innerHTML = text;
-    }
-
+    // eventos de selects
     employeeSelect.addEventListener('change', () => {
       updateHoursInfo();
       const empId = employeeSelect.value;
@@ -497,22 +461,34 @@
       }
     });
 
-    if (planEmployeeSelect) {
-      planEmployeeSelect.addEventListener('change', () => {
-        updatePlanHoursInfo();
-      });
-    }
+    planEmployeeSelect.addEventListener('change', () => {
+      updatePlanHoursInfo();
+    });
 
-    function addLog(text) {
-      const now = new Date().toLocaleString();
-      logEl.innerHTML += `${text} – <i>${now}</i><br>`;
-      logEl.scrollTop = logEl.scrollHeight;
-    }
+    // ============ ADICIONAR EMPREGADOS ============
+    btnAddEmp.addEventListener('click', () => {
+      const name = empNameInput.value.trim();
+      const phone = empPhoneInput.value.trim();
+      if (!name) {
+        alert('Bitte einen Namen eingeben.');
+        return;
+      }
+      const emp = {
+        id: generateId(),
+        name,
+        phone: phone || '',
+        monthlyHours: {},
+        timeBank: {},
+        activeSessionStart: null
+      };
+      employees.push(emp);
+      saveEmployees();
+      empNameInput.value = '';
+      empPhoneInput.value = '';
+      refreshEmployeeUI();
+    });
 
-    // =========================
-    //  Einstempeln / Ausstempeln
-    // =========================
-
+    // ============ STEMPENUHR ============
     btnIn.addEventListener('click', () => {
       const empId = employeeSelect.value;
       if (!empId) {
@@ -551,7 +527,7 @@
       const start = new Date(emp.activeSessionStart);
       const end = new Date();
       const diffMs = end - start;
-      const hours = diffMs / 1000 / 60 / 60; // duração em horas
+      const hours = diffMs / 1000 / 60 / 60;
 
       const monthKey = getCurrentMonthKey();
       if (!emp.monthlyHours) emp.monthlyHours = {};
@@ -570,18 +546,16 @@
       emp.activeSessionStart = null;
       saveEmployees();
 
-      statusEl.textContent = 'Ausgestempelt. Gearbeitete Zeit: ' + hours.toFixed(2) +
-        ' Std. Gesamt in diesem Monat: ' + newTotal.toFixed(2) + ' Std.';
+      statusEl.textContent = 'Ausgestempelt. Gearbeitete Zeit: ' +
+        hours.toFixed(2) + ' Std. Gesamt in diesem Monat: ' +
+        newTotal.toFixed(2) + ' Std.';
       addLog(emp.name + ' ausgestempelt (' + hours.toFixed(2) + ' Std.)');
 
       updateHoursInfo();
       updatePlanHoursInfo();
     });
 
-    // =========================
-    //  WhatsApp – painel do chefe
-    // =========================
-
+    // ============ WHATSAPP – CHEF ============
     function buildMessage() {
       const empId = planEmployeeSelect.value;
       const emp = employees.find(e => e.id === empId);
@@ -614,49 +588,42 @@
       return msg;
     }
 
-    if (btnPreview) {
-      btnPreview.addEventListener('click', () => {
-        const msg = buildMessage();
-        if (!msg) {
-          alert("Bitte Mitarbeiter, Tag und Zeiten ausfüllen.");
-          return;
-        }
-        previewText.textContent = msg;
-      });
-    }
+    btnPreview.addEventListener('click', () => {
+      const msg = buildMessage();
+      if (!msg) {
+        alert("Bitte Mitarbeiter, Tag und Zeiten ausfüllen.");
+        return;
+      }
+      previewText.textContent = msg;
+    });
 
-    if (btnWhatsapp) {
-      btnWhatsapp.addEventListener('click', () => {
-        const empId = planEmployeeSelect.value;
-        const emp = employees.find(e => e.id === empId);
-        const msg = buildMessage();
+    btnWhatsapp.addEventListener('click', () => {
+      const empId = planEmployeeSelect.value;
+      const emp = employees.find(e => e.id === empId);
+      const msg = buildMessage();
 
-        if (!emp) {
-          alert("Bitte Mitarbeiter wählen.");
-          return;
-        }
-        if (!msg) {
-          alert("Bitte Tag und Zeiten eintragen.");
-          return;
-        }
+      if (!emp) {
+        alert("Bitte Mitarbeiter wählen.");
+        return;
+      }
+      if (!msg) {
+        alert("Bitte Tag und Zeiten eintragen.");
+        return;
+      }
 
-        if (!emp.phone) {
-          alert("Für diesen Mitarbeiter ist keine Telefonnummer hinterlegt.";
-          return;
-        }
+      if (!emp.phone) {
+        alert("Für diesen Mitarbeiter ist keine Telefonnummer hinterlegt.");
+        return;
+      }
 
-        const phone = emp.phone; // ex: 4917...
-        const encodedMsg = encodeURIComponent(msg);
-        const url = "https://wa.me/" + phone + "?text=" + encodedMsg;
+      const phone = emp.phone; // z.B. 4917...
+      const encodedMsg = encodeURIComponent(msg);
+      const url = "https://wa.me/" + phone + "?text=" + encodedMsg;
 
-        window.open(url, "_blank");
-      });
-    }
+      window.open(url, "_blank");
+    });
 
-    // =========================
-    //  Inicialização
-    // =========================
-
+    // ============ INICIALIZAÇÃO ============
     loadEmployees();
     refreshEmployeeUI();
     updateHoursInfo();
