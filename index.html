@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -272,6 +271,10 @@
     <button id="btnChefLogin" class="btn-primary" style="width:100%; margin-top:8px;">
       Login
     </button>
+    <!-- NOVO: LOGOUT -->
+    <button id="btnChefLogout" class="btn-secondary" style="width:100%; margin-top:8px; display:none;">
+      Logout
+    </button>
 
     <p id="chefLoginStatus"></p>
     <small id="chefInfoText">
@@ -363,13 +366,18 @@
           Drucken / als PDF speichern
         </button>
 
-        <!-- NOVO: EXPORT MÊS COMPLETO -->
+        <!-- EXPORT MÊS COMPLETO TODOS -->
         <button id="btnExportMonthAll" class="btn-secondary" style="width:100%; margin-top:8px;">
           Gesamten Monat (alle Mitarbeiter) als CSV exportieren
         </button>
 
-        <!-- NOVA ÁREA: EXPORTAR CSV PARA EXCEL POR EMPREGADO -->
+        <!-- EXPORT INDIVIDUAL COM ESCOLHA DE MÊS -->
         <div style="margin-top:16px; border-top:1px solid #eee; padding-top:10px;">
+
+          <!-- mês -->
+          <label for="exportMonth">Monat auswählen:</label>
+          <input type="month" id="exportMonth" style="width:100%; margin-top:4px;">
+
           <label for="reportEmployeeSelect">Mitarbeiter für Export (Excel/CSV):</label>
           <select id="reportEmployeeSelect">
             <option value="">-- Mitarbeiter wählen --</option>
@@ -408,6 +416,11 @@
           Ausstempeln
         </button>
 
+        <!-- NOVO: ANULAR STEMPEL -->
+        <button id="btnCancelStempel" class="btn-danger" style="width:100%; margin-top:8px;">
+          Stempel annullieren (letzter Eintrag)
+        </button>
+
         <div id="log"><b>Heutige Einträge:</b><br></div>
 
         <small id="ruleNote">
@@ -418,11 +431,9 @@
   </div>
 
   <script>
-    // ============ CONFIG GERAL ============
-    const CHEF_PIN = "1234";       // PIN do chefe
+    const CHEF_PIN = "1234";
     const MAX_HOURS_PER_MONTH = 40;
 
-    // ============ TRADUÇÕES ============
     const translations = {
       de: {
         langLabel: 'Sprache:',
@@ -489,7 +500,6 @@
         waLimitNote: ' – LIMIT 40h überschritten!',
         waConfirm: 'Bitte bestätige mit OK.',
       },
-
       pt: {
         langLabel: 'Idioma:',
         systemTitle: 'Sistema digital de controlo de funcionários',
@@ -555,7 +565,6 @@
         waLimitNote: ' – LIMITE 40h ultrapassado!',
         waConfirm: 'Por favor confirma com OK.',
       },
-
       it: {
         langLabel: 'Lingua:',
         systemTitle: 'Sistema digitale di controllo dipendenti',
@@ -626,9 +635,10 @@
     let employees = [];
     let currentLang = localStorage.getItem('sanremoLang') || 'de';
 
-    // ============ ELEMENTOS DO DOM ============
+    // DOM
     const chefPinInput = document.getElementById('chefPinInput');
     const btnChefLogin = document.getElementById('btnChefLogin');
+    const btnChefLogout = document.getElementById('btnChefLogout');
     const chefLoginStatus = document.getElementById('chefLoginStatus');
     const chefArea = document.getElementById('chefArea');
 
@@ -643,6 +653,7 @@
     const logEl = document.getElementById('log');
     const btnIn = document.getElementById('btnIn');
     const btnOut = document.getElementById('btnOut');
+    const btnCancelStempel = document.getElementById('btnCancelStempel');
 
     const planEmployeeSelect = document.getElementById('planEmployeeSelect');
     const planHoursInfoEl = document.getElementById('planHoursInfo');
@@ -660,8 +671,9 @@
     const reportEmployeeSelect = document.getElementById('reportEmployeeSelect');
     const btnExportExcel = document.getElementById('btnExportExcel');
     const btnExportMonthAll = document.getElementById('btnExportMonthAll');
+    const exportMonthInput = document.getElementById('exportMonth');
 
-    // ============ APLICAR LÍNGUA ============
+    // LÍNGUA
     function applyLanguage(lang) {
       const t = translations[lang] || translations.de;
       currentLang = lang;
@@ -702,12 +714,10 @@
       document.getElementById('stempEmployeeLabel').textContent = t.stempEmployeeLabel;
       document.getElementById('ruleNote').textContent = t.ruleNote;
 
-      // horas e log inicial
       hoursInfoEl.innerHTML = t.hoursInfoEmpty;
       planHoursInfoEl.innerHTML = t.hoursInfoEmpty;
       logEl.innerHTML = '<b>' + t.logTitle + '</b><br>';
 
-      // Estado quando não há empregados
       if (employees.length === 0) {
         statusEl.textContent = t.statusNoEmployees;
       } else {
@@ -722,12 +732,13 @@
       renderMonthlyReport();
     });
 
-    // ============ LOGIN DO CHEFE ============
+    // LOGIN / LOGOUT CHEFE
     btnChefLogin.addEventListener('click', () => {
       const t = translations[currentLang];
       const pin = chefPinInput.value.trim();
       if (pin === CHEF_PIN) {
         chefArea.style.display = 'block';
+        if (btnChefLogout) btnChefLogout.style.display = 'block';
         chefLoginStatus.style.color = 'green';
         chefLoginStatus.textContent = t.chefLoginSuccess;
         chefPinInput.value = '';
@@ -737,7 +748,18 @@
       }
     });
 
-    // ============ DADOS & ARMAZENAMENTO ============
+    if (btnChefLogout) {
+      btnChefLogout.addEventListener('click', () => {
+        chefArea.style.display = 'none';
+        btnChefLogout.style.display = 'none';
+        chefLoginStatus.textContent = '';
+        chefLoginStatus.style.color = '';
+        chefPinInput.value = '';
+        alert('Logout abgeschlossen.');
+      });
+    }
+
+    // DADOS
     function loadEmployees() {
       const data = localStorage.getItem('sanremoEmployees');
       if (data) {
@@ -755,12 +777,19 @@
       return 'emp_' + Math.random().toString(36).substring(2, 9);
     }
 
-    // ============ HELPERS DE DATA/HORA ============
+    // DATAS
     function getCurrentMonthKey() {
       const now = new Date();
       const y = now.getFullYear();
       const m = String(now.getMonth() + 1).padStart(2, '0');
       return `${y}-${m}`;
+    }
+
+    function getSelectedMonthKey() {
+      if (exportMonthInput && exportMonthInput.value) {
+        return exportMonthInput.value; // já vem AAAA-MM
+      }
+      return getCurrentMonthKey();
     }
 
     function formatGermanDate(dateStr) {
@@ -774,7 +803,7 @@
       });
     }
 
-    // ============ HORAS & BANCO ============
+    // HORAS & BANCO
     function getHoursAndBank(emp) {
       const monthKey = getCurrentMonthKey();
       const total = (emp.monthlyHours && emp.monthlyHours[monthKey]) || 0;
@@ -816,15 +845,12 @@
       logEl.scrollTop = logEl.scrollHeight;
     }
 
-    // ============ UI DE EMPREGADOS ============
+    // UI EMPREGADOS
     function refreshEmployeeUI() {
       const t = translations[currentLang];
 
-      // Select da Stempeluhr
       employeeSelect.innerHTML = '<option value="">-- Mitarbeiter wählen --</option>';
-      // Select do plano
       planEmployeeSelect.innerHTML = '<option value="">-- Mitarbeiter wählen --</option>';
-      // Select do export
       if (reportEmployeeSelect) {
         reportEmployeeSelect.innerHTML = '<option value="">-- Mitarbeiter wählen --</option>';
       }
@@ -848,7 +874,6 @@
         }
       });
 
-      // Lista para o chefe
       employeeListDiv.innerHTML = '';
       employees.forEach(emp => {
         const row = document.createElement('div');
@@ -876,6 +901,8 @@
       const disabled = employees.length === 0;
       btnIn.disabled = disabled;
       btnOut.disabled = disabled;
+      if (btnCancelStempel) btnCancelStempel.disabled = disabled;
+
       if (disabled) {
         statusEl.textContent = t.statusNoEmployees;
       } else {
@@ -902,7 +929,7 @@
       updatePlanHoursInfo();
     });
 
-    // ============ ADICIONAR EMPREGADOS ============
+    // ADICIONAR EMPREGADOS
     btnAddEmp.addEventListener('click', () => {
       const name = empNameInput.value.trim();
       const phone = empPhoneInput.value.trim();
@@ -927,7 +954,7 @@
       renderMonthlyReport();
     });
 
-    // ============ STEMPENUHR ============
+    // STEMPENUHR
     btnIn.addEventListener('click', () => {
       const empId = employeeSelect.value;
       if (!empId) {
@@ -982,7 +1009,7 @@
       }
       emp.timeBank[monthKey] = bank;
 
-      // 🔹 GUARDAR HISTÓRICO DIÁRIO PARA EXPORTAR DEPOIS
+      // HISTÓRICO DIÁRIO
       if (!emp.workLog) emp.workLog = {};
       if (!emp.workLog[monthKey]) emp.workLog[monthKey] = [];
       emp.workLog[monthKey].push({
@@ -1005,7 +1032,69 @@
       renderMonthlyReport();
     });
 
-    // ============ WHATSAPP – CHEF ============
+    // ANULAR STEMPEL (1 e 2)
+    if (btnCancelStempel) {
+      btnCancelStempel.addEventListener('click', () => {
+        const empId = employeeSelect.value;
+        if (!empId) {
+          alert('Bitte zuerst einen Mitarbeiter auswählen.');
+          return;
+        }
+        const emp = employees.find(e => e.id === empId);
+        if (!emp) return;
+
+        const monthKey = getCurrentMonthKey();
+        const t = translations[currentLang];
+
+        // 1) se está atualmente eingestempelt → cancelar IN
+        if (emp.activeSessionStart) {
+          emp.activeSessionStart = null;
+          saveEmployees();
+          statusEl.textContent = t.statusReady;
+          addLog(emp.name + ' Einstempeln annulliert.');
+          return;
+        }
+
+        // 2) se não está eingestempelt → apagar último registo completo
+        if (!emp.workLog || !emp.workLog[monthKey] || emp.workLog[monthKey].length === 0) {
+          alert('Kein Eintrag zum Annullieren für diesen Monat.');
+          return;
+        }
+
+        const logs = emp.workLog[monthKey];
+        const last = logs[logs.length - 1];
+        const dateInfo = last.date || '';
+
+        if (!confirm('Letzten Eintrag vom ' + dateInfo + ' wirklich löschen?')) {
+          return;
+        }
+
+        const hoursToRemove = last.hours || 0;
+        logs.pop();
+
+        if (!emp.monthlyHours) emp.monthlyHours = {};
+        const prevTotal = emp.monthlyHours[monthKey] || 0;
+        let newTotal = prevTotal - hoursToRemove;
+        if (newTotal < 0) newTotal = 0;
+        emp.monthlyHours[monthKey] = newTotal;
+
+        if (!emp.timeBank) emp.timeBank = {};
+        let bank = 0;
+        if (newTotal > MAX_HOURS_PER_MONTH) {
+          bank = newTotal - MAX_HOURS_PER_MONTH;
+        }
+        emp.timeBank[monthKey] = bank;
+
+        saveEmployees();
+        updateHoursInfo();
+        updatePlanHoursInfo();
+        renderMonthlyReport();
+
+        addLog(emp.name + ' letzter Eintrag annulliert (' + hoursToRemove.toFixed(2) + ' Std.).');
+      });
+    }
+
+    // WHATSAPP
     function buildMessage() {
       const t = translations[currentLang];
       const empId = planEmployeeSelect.value;
@@ -1076,7 +1165,7 @@
       window.open(url, "_blank");
     });
 
-    // ============ MONATSBERICHT (CHEF) ============
+    // MONATSBERICHT
     function renderMonthlyReport() {
       const t = translations[currentLang];
       if (!monthlyReportContainer) return;
@@ -1139,7 +1228,7 @@
 
     window.printMonthlyReport = printMonthlyReport;
 
-    // ============ EXPORTAR CSV POR EMPREGADO ============
+    // EXPORT CSV INDIVIDUAL (MÊS ESCOLHIDO)
     function exportEmployeeMonthToCSV() {
       if (!reportEmployeeSelect) return;
       const empId = reportEmployeeSelect.value;
@@ -1154,7 +1243,7 @@
         return;
       }
 
-      const monthKey = getCurrentMonthKey();
+      const monthKey = getSelectedMonthKey();
       const logs = (emp.workLog && emp.workLog[monthKey]) ? emp.workLog[monthKey] : [];
 
       if (!logs.length) {
@@ -1192,20 +1281,21 @@
       URL.revokeObjectURL(url);
     }
 
-    // ============ EXPORTAR CSV DO MÊS COMPLETO ============
+    // EXPORT CSV MÊS COMPLETO (TODOS)
     function exportMonthAllToCSV() {
       if (!employees || employees.length === 0) {
         alert('Keine Mitarbeiter angelegt.');
         return;
       }
-      const monthKey = getCurrentMonthKey();
+      const monthKey = getSelectedMonthKey();
 
       let csv = 'Name;Monat;Monatsstunden;Überstundenkonto\n';
       let totalHoursAll = 0;
       let totalBankAll = 0;
 
       employees.forEach(emp => {
-        const { total, bank } = getHoursAndBank(emp);
+        const total = (emp.monthlyHours && emp.monthlyHours[monthKey]) || 0;
+        const bank = (emp.timeBank && emp.timeBank[monthKey]) || 0;
         totalHoursAll += total;
         totalBankAll += bank;
         csv += `${emp.name};${monthKey};${total.toFixed(2)};${bank.toFixed(2)}\n`;
@@ -1224,13 +1314,17 @@
       URL.revokeObjectURL(url);
     }
 
-    // ============ INICIALIZAÇÃO ============
+    // INICIALIZAÇÃO
     loadEmployees();
     refreshEmployeeUI();
     updateHoursInfo();
     updatePlanHoursInfo();
     renderMonthlyReport();
     applyLanguage(currentLang);
+
+    if (exportMonthInput) {
+      exportMonthInput.value = getCurrentMonthKey();
+    }
 
     if (btnExportExcel && reportEmployeeSelect) {
       btnExportExcel.addEventListener('click', exportEmployeeMonthToCSV);
@@ -1240,7 +1334,7 @@
     }
   </script>
 
-  <!-- Registo do Service Worker para modo App (PWA) -->
+  <!-- Service Worker PWA -->
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js').catch(function (err) {
