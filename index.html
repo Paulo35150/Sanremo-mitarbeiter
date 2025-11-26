@@ -3,7 +3,7 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>Eiscafé Sanremo – Mitarbeiterportal (Tablet & Handy)</title>
+  <title>Digitales Mitarbeiter-Kontrollsystem</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Farbe der Browserleiste / App-Thema -->
@@ -439,6 +439,32 @@
     </div>
   </div>
 
+  <!-- RECHTLICHES / DATENSCHUTZ -->
+  <div class="section">
+    <h3 id="legalTitle">Datenschutz & Nutzungshinweise</h3>
+    <p id="legalIntro">
+      Dieses System speichert Daten nur lokal im Browser/Tablet des Betriebs. Es werden keine Daten auf externen Servern gespeichert.
+    </p>
+    <ol>
+      <li id="legalPoint1">
+        Datenschutz: Zugriff auf die gespeicherten Daten haben nur der Betrieb/Chef und die von ihm autorisierten Personen. Der Arbeitgeber ist dafür verantwortlich, seine Mitarbeiter über die Datenerfassung zu informieren.
+      </li>
+      <li id="legalPoint2">
+        Nutzung & Urheberrecht: Diese Anwendung ist nur für den lizenzierten Betrieb bestimmt. Eine Weitergabe, Vervielfältigung, der Verkauf oder das Kopieren des Quellcodes und Designs an Dritte ohne ausdrückliche schriftliche Zustimmung des Entwicklers ist untersagt.
+      </li>
+      <li id="legalPoint3">
+        Haftungsausschluss: Die Anwendung unterstützt bei der Erfassung von Arbeitszeiten. Die rechtlich korrekte Lohnabrechnung und Einhaltung arbeitsrechtlicher Vorschriften bleiben in der Verantwortung des Arbeitgebers.
+      </li>
+    </ol>
+  </div>
+
+  <!-- FOOTER IMPRESSUM / DATENSCHUTZ -->
+  <footer class="section" style="margin-top:20px; text-align:center; font-size:12px; opacity:0.9;">
+    <a href="https://SEU-LINK-IMPRESSUM.de" target="_blank" id="footerImpressum">Impressum</a>
+    <span> | </span>
+    <a href="https://SEU-LINK-DATENSCHUTZ.de" target="_blank" id="footerDatenschutz">Datenschutz</a>
+  </footer>
+
   <script>
     const CHEF_PIN = "1234";
     const MAX_HOURS_PER_MONTH = 40;
@@ -508,6 +534,17 @@
         waMonthInfo: 'Aktueller Monat: {hours} Std. (Überstundenkonto: {bank} Std.)',
         waLimitNote: ' – LIMIT 40h überschritten!',
         waConfirm: 'Bitte bestätige mit OK.',
+
+        // Legal
+        legalTitle: 'Datenschutz & Nutzungshinweise',
+        legalIntro: 'Dieses System speichert Daten nur lokal im Browser/Tablet des Betriebs. Es werden keine Daten auf externen Servern gespeichert.',
+        legalPoint1: 'Datenschutz: Zugriff auf die gespeicherten Daten haben nur der Betrieb/Chef und die von ihm autorisierten Personen. Der Arbeitgeber ist dafür verantwortlich, seine Mitarbeiter über die Datenerfassung zu informieren.',
+        legalPoint2: 'Nutzung & Urheberrecht: Diese Anwendung ist nur für den lizenzierten Betrieb bestimmt. Eine Weitergabe, Vervielfältigung, der Verkauf oder das Kopieren des Quellcodes und Designs an Dritte ohne ausdrückliche schriftliche Zustimmung des Entwicklers ist untersagt.',
+        legalPoint3: 'Haftungsausschluss: Die Anwendung unterstützt bei der Erfassung von Arbeitszeiten. Die rechtlich korrekte Lohnabrechnung und Einhaltung arbeitsrechtlicher Vorschriften bleiben in der Verantwortung des Arbeitgebers.',
+
+        // Footer
+        footerImpressum: 'Impressum',
+        footerDatenschutz: 'Datenschutz'
       },
       pt: {
         langLabel: 'Idioma:',
@@ -573,6 +610,15 @@
         waMonthInfo: 'Mês atual: {hours} h (banco de horas: {bank} h)',
         waLimitNote: ' – LIMITE 40h ultrapassado!',
         waConfirm: 'Por favor confirma com OK.',
+
+        legalTitle: 'Proteção de dados & Utilização',
+        legalIntro: 'Este sistema guarda os dados apenas localmente no navegador/tablet do estabelecimento. Nenhum dado é enviado para servidores externos.',
+        legalPoint1: 'Proteção de dados: Apenas o estabelecimento/chefe e as pessoas autorizadas por ele têm acesso aos dados guardados. O empregador é responsável por informar os funcionários sobre a recolha destes dados.',
+        legalPoint2: 'Utilização & direitos de autor: Esta aplicação é destinada apenas ao estabelecimento licenciado. É proibida a partilha, cópia, venda ou reprodução do código e do design a terceiros sem autorização escrita do desenvolvedor.',
+        legalPoint3: 'Exclusão de responsabilidade: A aplicação ajuda a registar horas de trabalho, mas não substitui a contabilidade oficial. O cálculo correto de salários e o cumprimento da legislação laboral continuam sob responsabilidade do empregador.',
+
+        footerImpressum: 'Impressum',
+        footerDatenschutz: 'Proteção de dados'
       },
       it: {
         langLabel: 'Lingua:',
@@ -638,6 +684,15 @@
         waMonthInfo: 'Mese corrente: {hours} h (banca ore: {bank} h)',
         waLimitNote: ' – LIMITE 40h superato!',
         waConfirm: 'Per favore conferma con OK.',
+
+        legalTitle: 'Protezione dei dati & Utilizzo',
+        legalIntro: 'Questo sistema salva i dati solo localmente nel browser/tablet dell\'esercizio. Nessun dato viene inviato a server esterni.',
+        legalPoint1: 'Protezione dei dati: Solo l\'azienda/il titolare e le persone da lui autorizzate hanno accesso ai dati salvati. Il datore di lavoro è responsabile di informare i dipendenti sulla raccolta di questi dati.',
+        legalPoint2: 'Utilizzo & diritto d\'autore: Questa applicazione è destinata esclusivamente all\'esercizio licenziatario. È vietata la condivisione, copia, vendita o riproduzione del codice e del design a terzi senza autorizzazione scritta dello sviluppatore.',
+        legalPoint3: 'Esclusione di responsabilità: L\'applicazione aiuta a registrare le ore di lavoro, ma non sostituisce la contabilità ufficiale. Il calcolo corretto delle retribuzioni e il rispetto delle norme sul lavoro rimangono responsabilità del datore di lavoro.',
+
+        footerImpressum: 'Impressum',
+        footerDatenschutz: 'Protezione dei dati'
       }
     };
 
@@ -683,7 +738,6 @@
     const btnPrintEmployeeDetail = document.getElementById('btnPrintEmployeeDetail');
     const exportMonthInput = document.getElementById('exportMonth');
 
-    // LÍNGUA
     function applyLanguage(lang) {
       const t = translations[lang] || translations.de;
       currentLang = lang;
@@ -723,6 +777,19 @@
       document.getElementById('stempTitle').textContent = t.stempTitle;
       document.getElementById('stempEmployeeLabel').textContent = t.stempEmployeeLabel;
       document.getElementById('ruleNote').textContent = t.ruleNote;
+
+      // Legal / Datenschutz
+      document.getElementById('legalTitle').textContent = t.legalTitle;
+      document.getElementById('legalIntro').textContent = t.legalIntro;
+      document.getElementById('legalPoint1').textContent = t.legalPoint1;
+      document.getElementById('legalPoint2').textContent = t.legalPoint2;
+      document.getElementById('legalPoint3').textContent = t.legalPoint3;
+
+      // Footer links
+      const fImp = document.getElementById('footerImpressum');
+      const fDat = document.getElementById('footerDatenschutz');
+      if (fImp) fImp.textContent = t.footerImpressum;
+      if (fDat) fDat.textContent = t.footerDatenschutz;
 
       hoursInfoEl.innerHTML = t.hoursInfoEmpty;
       planHoursInfoEl.innerHTML = t.hoursInfoEmpty;
@@ -787,7 +854,6 @@
       return 'emp_' + Math.random().toString(36).substring(2, 9);
     }
 
-    // DATAS
     function getCurrentMonthKey() {
       const now = new Date();
       const y = now.getFullYear();
@@ -813,7 +879,6 @@
       });
     }
 
-    // HORAS & BANCO (SIEMPRE MÊS ATUAL PARA STEMPENUHR)
     function getHoursAndBank(emp) {
       const monthKey = getCurrentMonthKey();
       const total = (emp.monthlyHours && emp.monthlyHours[monthKey]) || 0;
@@ -855,7 +920,6 @@
       logEl.scrollTop = logEl.scrollHeight;
     }
 
-    // UI EMPREGADOS
     function refreshEmployeeUI() {
       const t = translations[currentLang];
 
@@ -939,7 +1003,6 @@
       updatePlanHoursInfo();
     });
 
-    // ADICIONAR EMPREGADOS
     btnAddEmp.addEventListener('click', () => {
       const name = empNameInput.value.trim();
       const phone = empPhoneInput.value.trim();
@@ -964,7 +1027,6 @@
       renderMonthlyReport();
     });
 
-    // STEMPENUHR
     btnIn.addEventListener('click', () => {
       const empId = employeeSelect.value;
       if (!empId) {
@@ -1019,7 +1081,6 @@
       }
       emp.timeBank[monthKey] = bank;
 
-      // HISTÓRICO DIÁRIO
       if (!emp.workLog) emp.workLog = {};
       if (!emp.workLog[monthKey]) emp.workLog[monthKey] = [];
       emp.workLog[monthKey].push({
@@ -1042,7 +1103,6 @@
       renderMonthlyReport();
     });
 
-    // ANULAR STEMPEL
     if (btnCancelStempel) {
       btnCancelStempel.addEventListener('click', () => {
         const empId = employeeSelect.value;
@@ -1056,7 +1116,6 @@
         const monthKey = getCurrentMonthKey();
         const t = translations[currentLang];
 
-        // 1) está eingestempelt → cancelar IN
         if (emp.activeSessionStart) {
           emp.activeSessionStart = null;
           saveEmployees();
@@ -1065,7 +1124,6 @@
           return;
         }
 
-        // 2) não está eingestempelt → apagar último registo completo
         if (!emp.workLog || !emp.workLog[monthKey] || emp.workLog[monthKey].length === 0) {
           alert('Kein Eintrag zum Annullieren für diesen Monat.');
           return;
@@ -1082,7 +1140,7 @@
         const hoursToRemove = last.hours || 0;
         logs.pop();
 
-        if (!emp.monthlyHours) emp.monthlyHours = {};
+        if (!emp.monthlyHours) emp.monthlyHours[monthKey] = emp.monthlyHours[monthKey] || 0;
         const prevTotal = emp.monthlyHours[monthKey] || 0;
         let newTotal = prevTotal - hoursToRemove;
         if (newTotal < 0) newTotal = 0;
@@ -1104,7 +1162,6 @@
       });
     }
 
-    // WHATSAPP
     function buildMessage() {
       const t = translations[currentLang];
       const empId = planEmployeeSelect.value;
@@ -1175,7 +1232,6 @@
       window.open(url, "_blank");
     });
 
-    // MONATSBERICHT (RESUMO)
     function renderMonthlyReport() {
       const t = translations[currentLang];
       if (!monthlyReportContainer) return;
@@ -1238,7 +1294,6 @@
 
     window.printMonthlyReport = printMonthlyReport;
 
-    // EXPORT CSV INDIVIDUAL (MÊS ESCOLHIDO) – FORMATO EXCEL EM TABELA
     function exportEmployeeMonthToCSV() {
       if (!reportEmployeeSelect) return;
       const empId = reportEmployeeSelect.value;
@@ -1261,7 +1316,6 @@
         return;
       }
 
-      // Cabeçalho em colunas
       let csv = 'Mitarbeiter;Datum;Einstempelzeit;Ausstempelzeit;Stunden\n';
 
       let totalHours = 0;
@@ -1292,7 +1346,6 @@
       URL.revokeObjectURL(url);
     }
 
-    // DRUCKER DETALHADO POR EMPREGADO
     function printEmployeeDetailReport() {
       if (!reportEmployeeSelect) return;
       const empId = reportEmployeeSelect.value;
@@ -1367,7 +1420,6 @@
       win.print();
     }
 
-    // EXPORT CSV MÊS COMPLETO (TODOS)
     function exportMonthAllToCSV() {
       if (!employees || employees.length === 0) {
         alert('Keine Mitarbeiter angelegt.');
@@ -1400,7 +1452,6 @@
       URL.revokeObjectURL(url);
     }
 
-    // INICIALIZAÇÃO
     loadEmployees();
     refreshEmployeeUI();
     updateHoursInfo();
