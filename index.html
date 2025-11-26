@@ -18,38 +18,30 @@
     }
     body {
       font-family: Arial, sans-serif;
-      padding: 20px;
+      padding: 16px;
       max-width: 900px;
       margin: 0 auto;
       background: #f0f2f5;
       min-height: 100vh;
     }
 
-    h3 { 
-      margin-top: 0; 
-      margin-bottom: 16px;
-    }
+    h3 { margin-top: 20px; }
 
     label {
       display: block;
       margin-top: 8px;
-      margin-bottom: 4px;
       font-weight: bold;
-      font-size: 14px;
     }
 
     input, select, button {
-      padding: 12px;
-      margin-top: 2px;
+      padding: 10px;
+      margin-top: 4px;
       font-size: 16px;
       box-sizing: border-box;
     }
 
     select, input {
       width: 100%;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      background: #fff;
     }
 
     button {
@@ -72,37 +64,21 @@
     }
 
     .section {
-      border: 1px solid #ddd;
-      padding: 18px;
-      margin-top: 18px;
-      border-radius: 12px;
-      background: #ffffff;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    }
-
-    /* Chef Login com cores da bandeira italiana */
-    .section-chef-login {
-      background: linear-gradient(
-        135deg,
-        rgba(0,140,69,0.18),
-        rgba(244,245,240,0.95),
-        rgba(205,33,42,0.22)
-      );
-      border-color: #ccc;
-    }
-    .section-chef-login-inner {
-      background: rgba(255,255,255,0.88);
-      padding: 14px 16px;
+      border: 1px solid #ccc;
+      padding: 14px;
+      margin-top: 15px;
       border-radius: 10px;
+      background: #ffffff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.06);
     }
 
     #status, #hoursInfo, #planHoursInfo {
       font-size: 14px;
-      margin-top: 8px;
+      margin-top: 6px;
     }
 
     #log {
-      margin-top: 12px;
+      margin-top: 10px;
       max-height: 220px;
       overflow-y: auto;
       background: #fff;
@@ -151,52 +127,67 @@
       .grid {
         display: grid;
         grid-template-columns: 1.1fr 1fr;
-        gap: 18px;
-        margin-top: 10px;
+        gap: 16px;
       }
     }
 
-    /* HERO BANNER COM FOTO SEM TEXTO POR CIMA */
+    /* HERO BANNER – só imagem, sem texto */
     .hero-banner {
-      position: relative;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
       border-radius: 16px;
       overflow: hidden;
-      height: 200px;
+      height: 210px;
       background-image: url('IMG-20251125-WA0004.jpg');
       background-size: cover;
       background-position: center;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
     }
 
-    /* Monatsbericht em baixo centrado */
-    #chefReportSection {
-      max-width: 540px;
-      margin: 20px auto 40px auto;
+    @media (min-width: 700px) {
+      .hero-banner {
+        height: 230px;
+      }
+    }
+
+    /* Chef Login com faixa italiana */
+    .chef-login-section {
+      position: relative;
+      padding-top: 0;
+    }
+    .chef-flag-bar {
+      height: 10px; /* opção 2: faixa média */
+      margin: -14px -14px 10px -14px; /* encostar à borda da .section */
+      border-radius: 10px 10px 0 0;
+      background: linear-gradient(
+        90deg,
+        #009246 0 33%,
+        #ffffff 33% 66%,
+        #ce2b37 66% 100%
+      );
     }
   </style>
 </head>
 <body>
 
-  <!-- BANNER GRANDE COM FOTO (SEM TEXTO) -->
+  <!-- BANNER GRANDE COM FOTO (sem texto) -->
   <header class="hero-banner"></header>
 
-  <!-- LOGIN DO CHEFE COM CORES DA BANDEIRA ITALIANA -->
-  <div class="section section-chef-login">
-    <div class="section-chef-login-inner">
-      <h3>Chef Login</h3>
-      <label for="chefPinInput">PIN eingeben:</label>
-      <input type="password" id="chefPinInput" placeholder="PIN">
+  <!-- LOGIN DO CHEFE -->
+  <div class="section chef-login-section">
+    <div class="chef-flag-bar"></div>
 
-      <button id="btnChefLogin" class="btn-primary" style="width:100%; margin-top:10px;">
-        Login
-      </button>
+    <h3>Chef Login</h3>
+    <label for="chefPinInput">PIN eingeben:</label>
+    <input type="password" id="chefPinInput" placeholder="PIN">
 
-      <p id="chefLoginStatus"></p>
-      <small>
-        Nach erfolgreichem Login werden die Chef-Bereiche (Mitarbeiter verwalten, Dienstplan / WhatsApp) und der Monatsbericht freigeschaltet.
-      </small>
-    </div>
+    <button id="btnChefLogin" class="btn-primary" style="width:100%; margin-top:8px;">
+      Login
+    </button>
+
+    <p id="chefLoginStatus"></p>
+    <small>
+      Nach erfolgreichem Login werden die Chef-Bereiche (Mitarbeiter verwalten, Dienstplan / WhatsApp &amp; Monatsbericht) freigeschaltet.
+    </small>
   </div>
 
   <div class="grid">
@@ -269,7 +260,7 @@
       </div>
     </div>
 
-    <!-- SECÇÃO: Stempeluhr – para os empregados (sempre visível) -->
+    <!-- SECÇÃO: Stempeluhr – para os empregados (sempre visível) + Monatsbericht em baixo -->
     <div>
       <div class="section">
         <h3>Stempeluhr (für Mitarbeiter)</h3>
@@ -283,38 +274,38 @@
           Stunden diesen Monat: 0 | Überstundenkonto: 0
         </div>
 
-        <div id="status" style="margin-top:10px;">Bereit zum Stempeln.</div>
+        <div id="status">Bereit zum Stempeln.</div>
 
-        <button id="btnIn" class="btn-primary" style="width:100%; margin-top:14px;">
+        <button id="btnIn" class="btn-primary" style="width:100%; margin-top:10px;">
           Einstempeln
         </button>
-        <button id="btnOut" class="btn-secondary" style="width:100%; margin-top:10px;">
+        <button id="btnOut" class="btn-secondary" style="width:100%; margin-top:8px;">
           Ausstempeln
         </button>
 
-        <div id="log" style="margin-top:14px;"><b>Heutige Einträge:</b><br></div>
+        <div id="log"><b>Heutige Einträge:</b><br></div>
 
-        <small style="display:block; margin-top:10px;">
+        <small>
           Regel: Maximal 40 Stunden im Monat. Alles darüber geht ins Überstundenkonto (Bank von Stunden).
         </small>
       </div>
+
+      <!-- MONATSBERICHT (CHEF) – agora debaixo da Stempeluhr -->
+      <div id="chefReportSection" class="section" style="display:none;">
+        <h3>Monatsbericht (Chef)</h3>
+        <p style="font-size: 13px; margin-bottom:8px;">
+          Übersicht aller Mitarbeiter für den aktuellen Monat.
+        </p>
+
+        <div id="monthlyReportContainer">
+          <!-- tabela gerada por JavaScript -->
+        </div>
+
+        <button class="btn-primary" style="width:100%; margin-top:10px;" onclick="printMonthlyReport()">
+          Drucken / als PDF speichern
+        </button>
+      </div>
     </div>
-  </div>
-
-  <!-- MONATSBERICHT (CHEF) AGORA EM BAIXO, CENTRADO -->
-  <div id="chefReportSection" class="section" style="display:none;">
-    <h3>Monatsbericht (Chef)</h3>
-    <p style="font-size: 13px; margin-bottom:8px;">
-      Übersicht aller Mitarbeiter für den aktuellen Monat.
-    </p>
-
-    <div id="monthlyReportContainer">
-      <!-- tabela gerada por JavaScript -->
-    </div>
-
-    <button class="btn-primary" style="width:100%; margin-top:10px;" onclick="printMonthlyReport()">
-      Drucken / als PDF speichern
-    </button>
   </div>
 
   <script>
