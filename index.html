@@ -3,9 +3,10 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>Mitarbeiterportal – Zeit & Dienstplan</title>
+  <title>Mitarbeiterportal – Diensplan</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#f0f2f5">
+  <link rel="manifest" href="manifest.json">
 
   <style>
     html, body {
@@ -145,34 +146,20 @@
 
     .hero-inner {
       position: absolute;
-      left: 18px;
-      bottom: 18px;
-      right: 18px;
-      color: #fff;
+      inset: 0;
       display: flex;
-      flex-direction: column;
-      gap: 4px;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #fff;
       text-shadow: 0 2px 4px rgba(0,0,0,0.6);
     }
 
     .hero-title {
-      font-size: 22px;
+      font-size: 30px;
       font-weight: 700;
-    }
-
-    .hero-subtitle {
-      font-size: 14px;
-      opacity: 0.95;
-    }
-
-    .hero-badge {
-      margin-top: 6px;
-      display: inline-block;
-      font-size: 11px;
-      padding: 3px 10px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.20);
-      backdrop-filter: blur(3px);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
 
     @media (min-width: 800px) {
@@ -180,10 +167,7 @@
         height: 230px;
       }
       .hero-title {
-        font-size: 26px;
-      }
-      .hero-subtitle {
-        font-size: 15px;
+        font-size: 36px;
       }
     }
 
@@ -237,16 +221,10 @@
 </head>
 <body>
 
-  <!-- BANNER COM FOTO (podes trocar a imagem no URL) -->
+  <!-- BANNER COM FOTO E TEXTO "DIENSPLAN" -->
   <header class="hero-banner">
     <div class="hero-inner">
-      <div class="hero-title">Mitarbeiterportal – Zeit &amp; Dienstplan</div>
-      <div class="hero-subtitle">
-        Tablet-optimiertes System zur Arbeitszeiterfassung und Schichtplanung.
-      </div>
-      <div class="hero-badge">
-        Lokal im Betrieb • Keine Cloud • Ideal für kleine Teams
-      </div>
+      <div class="hero-title">DIENSPLAN</div>
     </div>
   </header>
 
@@ -449,7 +427,19 @@
           Letzten Eintrag löschen
         </button>
 
-        <div id="log"><b>Heutige Einträge:</b><br></div>
+        <!-- NOVO BLOCO: botão mostrar / esconder log (apenas para chefe) -->
+        <div class="box" id="logContainer" style="display:none; margin-top:15px;">
+          <button id="toggleLogBtn"
+                  class="btn-secondary"
+                  style="width:100%; margin-bottom:8px;">
+            Heutige Einträge anzeigen
+          </button>
+
+          <div id="log"
+               style="display:none; max-height:220px; overflow-y:auto; font-size:13px;">
+            <b>Heutige Einträge:</b><br>
+          </div>
+        </div>
 
         <small>
           Regel: Maximal 40 Stunden im Monat. Alles darüber geht ins Überstundenkonto (Bank von Stunden).
@@ -467,12 +457,12 @@
     // ================== CONFIG LOGIN DO CHEFE ==================
     const CHEF_PIN = "1234"; // MUDA ESTE PIN SE QUISERES
 
-    const chefPinInput   = document.getElementById('chefPinInput');
-    const btnChefLogin   = document.getElementById('btnChefLogin');
-    const btnChefLogout  = document.getElementById('btnChefLogout');
+    const chefPinInput    = document.getElementById('chefPinInput');
+    const btnChefLogin    = document.getElementById('btnChefLogin');
+    const btnChefLogout   = document.getElementById('btnChefLogout');
     const chefLoginStatus = document.getElementById('chefLoginStatus');
-    const chefArea       = document.getElementById('chefArea');
-    const datenschutzBox = document.getElementById('datenschutzBox');
+    const chefArea        = document.getElementById('chefArea');
+    const datenschutzBox  = document.getElementById('datenschutzBox');
 
     let isChefLoggedIn = false;
 
@@ -484,12 +474,18 @@
         chefLoginStatus.style.color = 'green';
         chefLoginStatus.textContent = 'Login erfolgreich. Chef-Bereiche sind freigeschaltet.';
         chefPinInput.value = '';
+        if (logContainer) logContainer.style.display = 'block';
       } else {
         chefArea.style.display = 'none';
         datenschutzBox.style.display = 'none';
         chefLoginStatus.style.color = '#555';
         chefLoginStatus.textContent = 'Abgemeldet.';
         chefPinInput.value = '';
+        if (logContainer) {
+          logContainer.style.display = 'none';
+          logEl.style.display = 'none';
+          toggleLogBtn.textContent = 'Heutige Einträge anzeigen';
+        }
       }
     }
 
@@ -533,31 +529,34 @@
     }
 
     // ================== ELEMENTOS DO DOM ==================
-    const empNameInput = document.getElementById('empName');
-    const empPhoneInput = document.getElementById('empPhone');
-    const btnAddEmp = document.getElementById('btnAddEmp');
+    const empNameInput    = document.getElementById('empName');
+    const empPhoneInput   = document.getElementById('empPhone');
+    const btnAddEmp       = document.getElementById('btnAddEmp');
     const employeeListDiv = document.getElementById('employeeList');
 
     const employeeSelect = document.getElementById('employeeSelect');
-    const statusEl = document.getElementById('status');
-    const hoursInfoEl = document.getElementById('hoursInfo');
-    const logEl = document.getElementById('log');
-    const btnIn = document.getElementById('btnIn');
-    const btnOut = document.getElementById('btnOut');
-    const btnUndo = document.getElementById('btnUndo');
+    const statusEl       = document.getElementById('status');
+    const hoursInfoEl    = document.getElementById('hoursInfo');
+    const logEl          = document.getElementById('log');
+    const btnIn          = document.getElementById('btnIn');
+    const btnOut         = document.getElementById('btnOut');
+    const btnUndo        = document.getElementById('btnUndo');
 
     const planEmployeeSelect = document.getElementById('planEmployeeSelect');
-    const planHoursInfoEl = document.getElementById('planHoursInfo');
-    const dateInput = document.getElementById('date');
-    const timeFromInput = document.getElementById('timeFrom');
-    const timeToInput = document.getElementById('timeTo');
-    const btnPreview = document.getElementById('btnPreview');
-    const btnWhatsapp = document.getElementById('btnWhatsapp');
-    const previewText = document.getElementById('previewText');
+    const planHoursInfoEl    = document.getElementById('planHoursInfo');
+    const dateInput          = document.getElementById('date');
+    const timeFromInput      = document.getElementById('timeFrom');
+    const timeToInput        = document.getElementById('timeTo');
+    const btnPreview         = document.getElementById('btnPreview');
+    const btnWhatsapp        = document.getElementById('btnWhatsapp');
+    const previewText        = document.getElementById('previewText');
 
     const exportEmployeeSelect = document.getElementById('exportEmployeeSelect');
     const exportMonthSelect    = document.getElementById('exportMonthSelect');
     const btnExportWord        = document.getElementById('btnExportWord');
+
+    const logContainer  = document.getElementById('logContainer');
+    const toggleLogBtn  = document.getElementById('toggleLogBtn');
 
     const MAX_HOURS_PER_MONTH = 40;
 
@@ -737,6 +736,19 @@
       updatePlanHoursInfo();
     });
 
+    // ================== BOTÃO MOSTRAR/ESCONDER LOG ==================
+    if (toggleLogBtn && logEl) {
+      toggleLogBtn.addEventListener('click', () => {
+        if (logEl.style.display === 'none' || logEl.style.display === '') {
+          logEl.style.display = 'block';
+          toggleLogBtn.textContent = 'Heutige Einträge verstecken';
+        } else {
+          logEl.style.display = 'none';
+          toggleLogBtn.textContent = 'Heutige Einträge anzeigen';
+        }
+      });
+    }
+
     // ================== ADICIONAR EMPREGADOS ==================
     btnAddEmp.addEventListener('click', () => {
       const name = empNameInput.value.trim();
@@ -903,12 +915,12 @@
       }
 
       const msg =
-        "Eiscafé Sanremo – Dienstplan\n\n" +
+        "Dienstplan – Einsatz\n\n" +
         "Hallo " + emp.name + ",\n\n" +
         "dein Dienst:\n" +
         "📅 Datum: " + dateDE + "\n" +
         "⏰ Zeit: " + tFrom + " – " + tTo + " Uhr\n" +
-        "📍 Ort: Eiscafé Sanremo, Bad Berleburg\n\n" +
+        "📍 Ort: Betrieb\n\n" +
         hoursLine + "\n\n" +
         "Bitte bestätige mit OK.";
       return msg;
@@ -1171,6 +1183,13 @@
     updatePlanHoursInfo();
     renderMonthlyReport();
     buildExportMonthOptions();
+
+    // ================== SERVICE WORKER (PWA) ==================
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js').catch(function (err) {
+        console.error('ServiceWorker-Fehler:', err);
+      });
+    }
   </script>
 </body>
 </html>
