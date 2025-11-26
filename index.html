@@ -283,6 +283,9 @@
       <button id="btnChefLogin" class="btn-primary" style="width:100%; margin-top:8px;" data-i18n="btnLogin">
         Login
       </button>
+      <button id="btnChefLogout" class="btn-secondary" style="width:100%; margin-top:8px; display:none;" data-i18n="btnLogout">
+        Logout
+      </button>
 
       <p id="chefLoginStatus"></p>
       <small data-i18n="chefLoginInfo">
@@ -377,6 +380,27 @@
         </button>
       </div>
 
+      <!-- EXPORT PARA EXCEL/CSV -->
+      <div class="section">
+        <h3 data-i18n="exportTitle">Export für Buchhaltung (CSV)</h3>
+
+        <label for="exportEmployeeSelect" data-i18n="exportEmpLabel">Mitarbeiter für Export auswählen:</label>
+        <select id="exportEmployeeSelect">
+          <option value="" data-i18n="optChooseEmployee">-- Mitarbeiter wählen --</option>
+        </select>
+
+        <label for="exportMonth" data-i18n="exportMonthLabel">Monat wählen:</label>
+        <input type="month" id="exportMonth">
+
+        <button id="btnExportCsv" class="btn-primary" style="width:100%; margin-top:10px;" data-i18n="btnExportCsv">
+          Export als CSV (Excel)
+        </button>
+
+        <small data-i18n="exportInfo">
+          Es wird eine CSV-Datei mit Name, Datum, Start, Ende und Stunden pro Tag erstellt – plus Monatssumme.
+        </small>
+      </div>
+
       <!-- DATENSCHUTZ & NUTZUNGSHINWEISE – só após Chef-Login -->
       <div class="section">
         <h3 data-i18n="legalTitle">Datenschutz &amp; Nutzungshinweise</h3>
@@ -442,6 +466,9 @@
         <button id="btnOut" class="btn-secondary" style="width:100%; margin-top:8px;" data-i18n="btnClockOut">
           Ausstempeln
         </button>
+        <button id="btnCancelStamp" class="btn-danger" style="width:100%; margin-top:8px;" data-i18n="btnCancelStamp">
+          Letzte Buchung löschen
+        </button>
 
         <div id="log"><b data-i18n="todayEntriesTitle">Heutige Einträge:</b><br></div>
 
@@ -463,21 +490,9 @@
 
     const chefPinInput = document.getElementById('chefPinInput');
     const btnChefLogin = document.getElementById('btnChefLogin');
+    const btnChefLogout = document.getElementById('btnChefLogout');
     const chefLoginStatus = document.getElementById('chefLoginStatus');
     const chefArea = document.getElementById('chefArea');
-
-    btnChefLogin.addEventListener('click', () => {
-      const pin = chefPinInput.value.trim();
-      if (pin === CHEF_PIN) {
-        chefArea.style.display = 'block';
-        chefLoginStatus.style.color = 'green';
-        chefLoginStatus.textContent = currentTexts.chefLoginSuccess || 'Login erfolgreich. Chef-Bereiche sind freigeschaltet.';
-        chefPinInput.value = '';
-      } else {
-        chefLoginStatus.style.color = 'red';
-        chefLoginStatus.textContent = currentTexts.chefLoginFail || 'Falscher PIN.';
-      }
-    });
 
     // ============ DADOS & ARMAZENAMENTO ============
     let employees = [];
@@ -489,6 +504,12 @@
       } else {
         employees = [];
       }
+      // garantir que todos têm "entries"
+      employees.forEach(e => {
+        if (!e.entries) e.entries = [];
+        if (!e.monthlyHours) e.monthlyHours = {};
+        if (!e.timeBank) e.timeBank = {};
+      });
     }
 
     function saveEmployees() {
@@ -511,6 +532,7 @@
     const logEl = document.getElementById('log');
     const btnIn = document.getElementById('btnIn');
     const btnOut = document.getElementById('btnOut');
+    const btnCancelStamp = document.getElementById('btnCancelStamp');
 
     const planEmployeeSelect = document.getElementById('planEmployeeSelect');
     const planHoursInfoEl = document.getElementById('planHoursInfo');
@@ -520,6 +542,10 @@
     const btnPreview = document.getElementById('btnPreview');
     const btnWhatsapp = document.getElementById('btnWhatsapp');
     const previewText = document.getElementById('previewText');
+
+    const exportEmployeeSelect = document.getElementById('exportEmployeeSelect');
+    const exportMonth = document.getElementById('exportMonth');
+    const btnExportCsv = document.getElementById('btnExportCsv');
 
     const MAX_HOURS_PER_MONTH = 40;
 
@@ -542,7 +568,41 @@
       });
     }
 
+    function formatDateForCsv(dateObj) {
+      const d = String(dateObj.getDate()).padStart(2, '0');
+      const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const y = dateObj.getFullYear();
+      return `${d}.${m}.${y}`;
+    }
+
+    function formatTimeHHMM(dateObj) {
+      const hh = String(dateObj.getHours()).padStart(2, '0');
+      const mm = String(dateObj.getMinutes()).padStart(2, '0');
+      return `${hh}:${mm}`;
+    }
+
     // ============ HORAS & BANCO ============
+    function recalcEmployeeHours(emp) {
+      emp.monthlyHours = {};
+      emp.timeBank = {};
+      if (!emp.entries) return;
+
+      emp.entries.forEach(entry => {
+        const start = new Date(entry.start);
+        const y = start.getFullYear();
+        const m = String(start.getMonth() + 1).padStart(2, '0');
+        const key = `${y}-${m}`;
+        const prev = emp.monthlyHours[key] || 0;
+        const newTotal = prev + entry.hours;
+        emp.monthlyHours[key] = newTotal;
+      });
+
+      Object.keys(emp.monthlyHours).forEach(key => {
+        const total = emp.monthlyHours[key];
+        emp.timeBank[key] = total > MAX_HOURS_PER_MONTH ? (total - MAX_HOURS_PER_MONTH) : 0;
+      });
+    }
+
     function getHoursAndBank(emp) {
       const monthKey = getCurrentMonthKey();
       const total = (emp.monthlyHours && emp.monthlyHours[monthKey]) || 0;
@@ -594,6 +654,7 @@
     function refreshEmployeeUI() {
       employeeSelect.innerHTML = '<option value="">' + currentTexts.optChooseEmployee + '</option>';
       planEmployeeSelect.innerHTML = '<option value="">' + currentTexts.optChooseEmployee + '</option>';
+      exportEmployeeSelect.innerHTML = '<option value="">' + currentTexts.optChooseEmployee + '</option>';
 
       employees.forEach(emp => {
         const opt1 = document.createElement('option');
@@ -605,6 +666,11 @@
         opt2.value = emp.id;
         opt2.textContent = emp.name;
         planEmployeeSelect.appendChild(opt2);
+
+        const opt3 = document.createElement('option');
+        opt3.value = emp.id;
+        opt3.textContent = emp.name;
+        exportEmployeeSelect.appendChild(opt3);
       });
 
       employeeListDiv.innerHTML = '';
@@ -634,6 +700,7 @@
       const disabled = employees.length === 0;
       btnIn.disabled = disabled;
       btnOut.disabled = disabled;
+      btnCancelStamp.disabled = disabled;
       if (disabled) {
         statusEl.textContent = currentTexts.noEmployees;
       } else {
@@ -673,7 +740,8 @@
         phone: phone || '',
         monthlyHours: {},
         timeBank: {},
-        activeSessionStart: null
+        activeSessionStart: null,
+        entries: []
       };
       employees.push(emp);
       saveEmployees();
@@ -726,27 +794,57 @@
       const diffMs = end - start;
       const hours = diffMs / 1000 / 60 / 60;
 
-      const monthKey = getCurrentMonthKey();
-      if (!emp.monthlyHours) emp.monthlyHours = {};
-      if (!emp.timeBank) emp.timeBank = {};
+      if (!emp.entries) emp.entries = [];
+      emp.entries.push({
+        start: emp.activeSessionStart,
+        end: end.toISOString(),
+        hours: hours
+      });
 
-      const prevTotal = emp.monthlyHours[monthKey] || 0;
-      const newTotal = prevTotal + hours;
-      emp.monthlyHours[monthKey] = newTotal;
-
-      let bank = 0;
-      if (newTotal > MAX_HOURS_PER_MONTH) {
-        bank = newTotal - MAX_HOURS_PER_MONTH;
-      }
-      emp.timeBank[monthKey] = bank;
-
+      recalcEmployeeHours(emp);
       emp.activeSessionStart = null;
       saveEmployees();
 
+      const monthKey = getCurrentMonthKey();
+      const total = emp.monthlyHours[monthKey] || hours;
+
       statusEl.textContent = currentTexts.clockOutStatus
         .replace('{hours}', hours.toFixed(2))
-        .replace('{total}', newTotal.toFixed(2));
+        .replace('{total}', total.toFixed(2));
       addLog(emp.name + ' ' + currentTexts.logClockOut.replace('{hours}', hours.toFixed(2)));
+
+      updateHoursInfo();
+      updatePlanHoursInfo();
+      renderMonthlyReport();
+    });
+
+    // Anular Stempel
+    btnCancelStamp.addEventListener('click', () => {
+      const empId = employeeSelect.value;
+      if (!empId) {
+        alert(currentTexts.selectEmployee);
+        return;
+      }
+      const emp = employees.find(e => e.id === empId);
+      if (!emp) return;
+
+      // Se está com entrada ativa (carregou "Einstempeln" errado)
+      if (emp.activeSessionStart) {
+        emp.activeSessionStart = null;
+        saveEmployees();
+        statusEl.textContent = currentTexts.cancelActive;
+        addLog(emp.name + ' ' + currentTexts.logCancelActive);
+      } else if (emp.entries && emp.entries.length > 0) {
+        // Anular último registo completo
+        emp.entries.pop();
+        recalcEmployeeHours(emp);
+        saveEmployees();
+        statusEl.textContent = currentTexts.cancelLastDone;
+        addLog(emp.name + ' ' + currentTexts.logCancelLast);
+      } else {
+        alert(currentTexts.noEntryToCancel);
+        return;
+      }
 
       updateHoursInfo();
       updatePlanHoursInfo();
@@ -882,6 +980,60 @@
       win.print();
     }
 
+    // ============ EXPORT CSV ============
+    btnExportCsv.addEventListener('click', () => {
+      const empId = exportEmployeeSelect.value;
+      if (!empId) {
+        alert(currentTexts.exportNoEmp);
+        return;
+      }
+      const emp = employees.find(e => e.id === empId);
+      if (!emp) return;
+
+      const monthVal = exportMonth.value; // "YYYY-MM" ou ""
+      const monthKey = monthVal || getCurrentMonthKey();
+
+      const entries = (emp.entries || []).filter(entry => {
+        const d = new Date(entry.start);
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const key = `${y}-${m}`;
+        return key === monthKey;
+      });
+
+      if (!entries.length) {
+        alert(currentTexts.exportNoEntries);
+        return;
+      }
+
+      let header = currentTexts.exportCsvHeader; // ex: "Name;Datum;Start;Ende;Stunden"
+      let csv = header + '\n';
+
+      let totalHours = 0;
+      entries.forEach(entry => {
+        const start = new Date(entry.start);
+        const end = new Date(entry.end);
+        const dateStr = formatDateForCsv(start);
+        const startStr = formatTimeHHMM(start);
+        const endStr = formatTimeHHMM(end);
+        totalHours += entry.hours;
+        csv += `${emp.name};${dateStr};${startStr};${endStr};${entry.hours.toFixed(2)}\n`;
+      });
+
+      csv += `;;;;
+${currentTexts.exportTotalLabel};${totalHours.toFixed(2)}\n`;
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `stunden_${emp.name}_${monthKey}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+
     // ============ TRADUÇÕES ============
     const translations = {
       de: {
@@ -892,9 +1044,11 @@
         chefLoginTitle: 'Chef Login',
         chefPinLabel: 'PIN eingeben:',
         btnLogin: 'Login',
+        btnLogout: 'Logout',
         chefLoginInfo: 'Nach erfolgreichem Login werden die Chef-Bereiche (Mitarbeiter verwalten, Dienstplan / WhatsApp & Monatsbericht) freigeschaltet.',
         chefLoginSuccess: 'Login erfolgreich. Chef-Bereiche sind freigeschaltet.',
         chefLoginFail: 'Falscher PIN.',
+        loggedOut: 'Logout erfolgreich. Chef-Bereiche wurden geschlossen.',
 
         manageEmployeesTitle: 'Mitarbeiter verwalten',
         empNameLabel: 'Name des Mitarbeiters:',
@@ -918,6 +1072,16 @@
         monthlyReportInfo: 'Übersicht aller Mitarbeiter für den aktuellen Monat.',
         btnPrintPdf: 'Drucken / als PDF speichern',
 
+        exportTitle: 'Export für Buchhaltung (CSV)',
+        exportEmpLabel: 'Mitarbeiter für Export auswählen:',
+        exportMonthLabel: 'Monat wählen:',
+        btnExportCsv: 'Export als CSV (Excel)',
+        exportInfo: 'Es wird eine CSV-Datei mit Name, Datum, Start, Ende und Stunden pro Tag erstellt – plus Monatssumme.',
+        exportNoEmp: 'Bitte Mitarbeiter für den Export auswählen.',
+        exportNoEntries: 'Keine Einträge für diesen Monat gefunden.',
+        exportCsvHeader: 'Name;Datum;Start;Ende;Stunden',
+        exportTotalLabel: 'Gesamtstunden',
+
         legalTitle: 'Datenschutz & Nutzungshinweise',
         legalIntro: 'Dieses System speichert Daten nur lokal im Browser/Tablet des Betriebs. Es werden keine Daten auf externen Servern gespeichert.',
         legalBox1Title: '1. Datenschutz',
@@ -932,6 +1096,7 @@
         clockReady: 'Bereit zum Stempeln.',
         btnClockIn: 'Einstempeln',
         btnClockOut: 'Ausstempeln',
+        btnCancelStamp: 'Letzte Buchung löschen',
         todayEntriesTitle: 'Heutige Einträge:',
         clockRule: 'Regel: Maximal 40 Stunden im Monat. Alles darüber geht ins Überstundenkonto (Bank von Stunden).',
 
@@ -951,6 +1116,11 @@
         logClockOut: 'ausgestempelt ({hours} Std.)',
         fillPlanFields: 'Bitte Mitarbeiter, Tag und Zeiten ausfüllen.',
         noPhone: 'Für diesen Mitarbeiter ist keine Telefonnummer hinterlegt.',
+        cancelActive: 'Aktiver Stempel wurde gelöscht.',
+        cancelLastDone: 'Letzte Buchung wurde gelöscht.',
+        noEntryToCancel: 'Keine Buchung zum Löschen vorhanden.',
+        logCancelActive: 'aktiven Stempel storniert',
+        logCancelLast: 'letzte Buchung storniert',
 
         tblEmployee: 'Mitarbeiter',
         tblHours: 'Stunden im Monat',
@@ -969,9 +1139,11 @@
         chefLoginTitle: 'Login do Chefe',
         chefPinLabel: 'Introduzir PIN:',
         btnLogin: 'Entrar',
+        btnLogout: 'Sair',
         chefLoginInfo: 'Depois do login são ativadas as áreas do chefe (gestão de funcionários, plano / WhatsApp & relatório mensal).',
         chefLoginSuccess: 'Login efetuado com sucesso. Áreas do chefe ativadas.',
         chefLoginFail: 'PIN incorreto.',
+        loggedOut: 'Logout efetuado. Áreas do chefe foram fechadas.',
 
         manageEmployeesTitle: 'Gerir funcionários',
         empNameLabel: 'Nome do funcionário:',
@@ -995,6 +1167,16 @@
         monthlyReportInfo: 'Resumo de todos os funcionários no mês atual.',
         btnPrintPdf: 'Imprimir / guardar como PDF',
 
+        exportTitle: 'Exportar para contabilidade (CSV)',
+        exportEmpLabel: 'Escolher funcionário para exportar:',
+        exportMonthLabel: 'Escolher mês:',
+        btnExportCsv: 'Exportar como CSV (Excel)',
+        exportInfo: 'É criado um ficheiro CSV com nome, data, hora de entrada, saída e horas por dia – mais o total do mês.',
+        exportNoEmp: 'Escolhe um funcionário para exportar.',
+        exportNoEntries: 'Não há registos para esse mês.',
+        exportCsvHeader: 'Nome;Data;Entrada;Saída;Horas',
+        exportTotalLabel: 'Total de horas',
+
         legalTitle: 'Proteção de dados & utilização',
         legalIntro: 'Este sistema guarda dados apenas localmente no navegador/tablet do estabelecimento. Nenhum dado é guardado em servidores externos.',
         legalBox1Title: '1. Proteção de dados',
@@ -1009,6 +1191,7 @@
         clockReady: 'Pronto para picar ponto.',
         btnClockIn: 'Entrar',
         btnClockOut: 'Sair',
+        btnCancelStamp: 'Anular último registo',
         todayEntriesTitle: 'Registos de hoje:',
         clockRule: 'Regra: máximo 40 horas por mês. O resto vai para o banco de horas.',
 
@@ -1028,6 +1211,11 @@
         logClockOut: 'saiu ({hours} h)',
         fillPlanFields: 'Preenche funcionário, dia e horas.',
         noPhone: 'Não há número de telefone guardado para este funcionário.',
+        cancelActive: 'Entrada ativa foi anulada.',
+        cancelLastDone: 'Último registo foi anulado.',
+        noEntryToCancel: 'Não há registos para anular.',
+        logCancelActive: 'entrada ativa anulada',
+        logCancelLast: 'último registo anulado',
 
         tblEmployee: 'Funcionário',
         tblHours: 'Horas no mês',
@@ -1046,9 +1234,11 @@
         chefLoginTitle: 'Login titolare',
         chefPinLabel: 'Inserire PIN:',
         btnLogin: 'Login',
+        btnLogout: 'Logout',
         chefLoginInfo: 'Dopo il login si attivano le aree del titolare (gestione dipendenti, planning / WhatsApp & rapporto mensile).',
         chefLoginSuccess: 'Login riuscito. Aree del titolare attivate.',
         chefLoginFail: 'PIN errato.',
+        loggedOut: 'Logout eseguito. Le aree del titolare sono state chiuse.',
 
         manageEmployeesTitle: 'Gestione dipendenti',
         empNameLabel: 'Nome del dipendente:',
@@ -1072,6 +1262,16 @@
         monthlyReportInfo: 'Panoramica di tutti i dipendenti per il mese corrente.',
         btnPrintPdf: 'Stampa / salva come PDF',
 
+        exportTitle: 'Export per contabilità (CSV)',
+        exportEmpLabel: 'Seleziona dipendente per export:',
+        exportMonthLabel: 'Seleziona mese:',
+        btnExportCsv: 'Esporta come CSV (Excel)',
+        exportInfo: 'Viene creato un file CSV con nome, data, ora di entrata, uscita e ore per giorno – più il totale del mese.',
+        exportNoEmp: 'Seleziona un dipendente per l’export.',
+        exportNoEntries: 'Nessuna registrazione per questo mese.',
+        exportCsvHeader: 'Nome;Data;Entrata;Uscita;Ore',
+        exportTotalLabel: 'Ore totali',
+
         legalTitle: 'Protezione dati & utilizzo',
         legalIntro: 'Questo sistema salva i dati solo localmente nel browser/tablet dell’esercizio. Nessun dato viene salvato su server esterni.',
         legalBox1Title: '1. Protezione dati',
@@ -1086,6 +1286,7 @@
         clockReady: 'Pronto per timbrare.',
         btnClockIn: 'Entrata',
         btnClockOut: 'Uscita',
+        btnCancelStamp: 'Annulla ultima timbratura',
         todayEntriesTitle: 'Registrazioni di oggi:',
         clockRule: 'Regola: massimo 40 ore al mese. Il resto va nella banca ore.',
 
@@ -1105,6 +1306,11 @@
         logClockOut: 'uscita ({hours} h)',
         fillPlanFields: 'Compila dipendente, giorno e orari.',
         noPhone: 'Per questo dipendente non è stato salvato alcun numero di telefono.',
+        cancelActive: 'Timbratura attiva cancellata.',
+        cancelLastDone: 'Ultima registrazione cancellata.',
+        noEntryToCancel: 'Nessuna registrazione da cancellare.',
+        logCancelActive: 'timbratura attiva annullata',
+        logCancelLast: 'ultima registrazione annullata',
 
         tblEmployee: 'Dipendente',
         tblHours: 'Ore nel mese',
@@ -1130,10 +1336,6 @@
         }
       });
 
-      // texts usados em JS
-      currentTexts = t;
-
-      // atualizar selects e info
       refreshEmployeeUI();
       updateHoursInfo();
       updatePlanHoursInfo();
@@ -1145,6 +1347,7 @@
       btn.addEventListener('click', () => {
         const lang = btn.getAttribute('data-lang');
         currentLang = lang;
+        currentTexts = translations[lang];
         localStorage.setItem('sanremo_lang', lang);
 
         document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
@@ -1154,19 +1357,41 @@
       });
     });
 
+    // LOGIN / LOGOUT handlers (precisam de currentTexts já definido)
+    btnChefLogin.addEventListener('click', () => {
+      const pin = chefPinInput.value.trim();
+      if (pin === CHEF_PIN) {
+        chefArea.style.display = 'block';
+        btnChefLogout.style.display = 'block';
+        chefLoginStatus.style.color = 'green';
+        chefLoginStatus.textContent = currentTexts.chefLoginSuccess;
+        chefPinInput.value = '';
+      } else {
+        chefLoginStatus.style.color = 'red';
+        chefLoginStatus.textContent = currentTexts.chefLoginFail;
+      }
+    });
+
+    btnChefLogout.addEventListener('click', () => {
+      chefArea.style.display = 'none';
+      btnChefLogout.style.display = 'none';
+      chefLoginStatus.style.color = '#333';
+      chefLoginStatus.textContent = currentTexts.loggedOut;
+    });
+
     // ============ INICIALIZAÇÃO ============
     const savedLang = localStorage.getItem('sanremo_lang');
     if (savedLang && translations[savedLang]) {
       currentLang = savedLang;
+      currentTexts = translations[savedLang];
       document.querySelectorAll('.lang-btn').forEach(b => {
         if (b.getAttribute('data-lang') === savedLang) b.classList.add('active');
         else b.classList.remove('active');
       });
-      currentTexts = translations[savedLang];
     }
 
     loadEmployees();
-    applyTranslations(); // também chama refresh UI etc.
+    applyTranslations();
   </script>
 </body>
 </html>
