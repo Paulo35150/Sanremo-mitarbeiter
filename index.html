@@ -3,7 +3,7 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>WorkTime – Stempel System</title>
+  <title>Mitarbeiterportal – Zeit & Dienstplan</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#f0f2f5">
 
@@ -128,22 +128,15 @@
       }
     }
 
-    /* NOVO BANNER COM LOGÓTIPO HORIZONTAL */
-    .hero-banner {
-      width: 100%;
-      background: #ffffff;
-      padding: 24px 0;
-      border-radius: 18px;
-      margin-bottom: 24px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    /* HEADER COM LOGÓTIPO */
+    .logo-header {
+      text-align: center;
+      padding: 12px 0 20px;
     }
-    .hero-banner img {
-      max-width: 94%;
+    .logo-header img {
+      max-width: 320px;   /* fica bem no tablet */
+      width: 80%;
       height: auto;
-      display: block;
     }
 
     /* cartão login com cores da bandeira italiana */
@@ -177,6 +170,9 @@
       margin-top: 10px;
       font-size: 13px;
     }
+    .ds-block h4 {
+      margin: 0 0 6px 0;
+    }
 
     footer {
       margin-top: 24px;
@@ -193,9 +189,9 @@
 </head>
 <body>
 
-  <!-- BANNER COM O NOVO LOGÓTIPO -->
-  <header class="hero-banner">
-    <img src="worktime-logo.png" alt="WorkTime – Stempel System">
+  <!-- LOGÓTIPO HORIZONTAL -->
+  <header class="logo-header">
+    <img src="logo-worktime.jpg" alt="WorkTime – Stempel System">
   </header>
 
   <!-- LOGIN DO CHEFE -->
@@ -320,7 +316,9 @@
         </select>
 
         <label for="exportMonthSelect" style="margin-top:10px;"><b>Monat auswählen:</b></label>
-        <select id="exportMonthSelect"></select>
+        <select id="exportMonthSelect">
+          <!-- wird per JavaScript mit Monaten gefüllt -->
+        </select>
 
         <button id="btnExportWord" class="btn-primary" style="width:100%; margin-top:14px;">
           Word / Drucker – Monatsblatt erstellen
@@ -414,6 +412,7 @@
     const CHEF_PIN = "1234"; // MUDA ESTE PIN SE QUISERES
 
     const chefPinInput   = document.getElementById('chefPinInput');
+    the chefs
     const btnChefLogin   = document.getElementById('btnChefLogin');
     const btnChefLogout  = document.getElementById('btnChefLogout');
     const chefLoginStatus = document.getElementById('chefLoginStatus');
@@ -604,11 +603,8 @@
 
     // ================== UI DE EMPREGADOS ==================
     function refreshEmployeeUI() {
-      // Select da Stempeluhr
       employeeSelect.innerHTML = '<option value="">-- Mitarbeiter wählen --</option>';
-      // Select do plano
       planEmployeeSelect.innerHTML = '<option value="">-- Mitarbeiter wählen --</option>';
-      // Select do export
       exportEmployeeSelect.innerHTML = '<option value="">-- Mitarbeiter wählen --</option>';
 
       employees.forEach(emp => {
@@ -762,7 +758,6 @@
       }
       emp.timeBank[monthKey] = bank;
 
-      // guardar sessão completa
       if (!emp.sessions) emp.sessions = [];
       emp.sessions.push({
         start: start.toISOString(),
@@ -783,7 +778,6 @@
       renderMonthlyReport();
     });
 
-    // anular último registo
     btnUndo.addEventListener('click', () => {
       const empId = employeeSelect.value;
       if (!empId) {
@@ -801,8 +795,7 @@
       }
 
       const last = emp.sessions.pop();
-      const dateKey = last.start.substring(0, 7); // YYYY-MM
-
+      const dateKey = last.start.substring(0, 7);
       let sum = 0;
       emp.sessions.forEach(s => {
         if (s.start.substring(0, 7) === dateKey) {
@@ -848,12 +841,12 @@
       }
 
       const msg =
-        "WorkTime – Dienstplan\n\n" +
+        "Eiscafé Sanremo – Dienstplan\n\n" +
         "Hallo " + emp.name + ",\n\n" +
         "dein Dienst:\n" +
         "📅 Datum: " + dateDE + "\n" +
         "⏰ Zeit: " + tFrom + " – " + tTo + " Uhr\n" +
-        "📍 Ort: Arbeitsplatz\n\n" +
+        "📍 Ort: Eiscafé Sanremo, Bad Berleburg\n\n" +
         hoursLine + "\n\n" +
         "Bitte bestätige mit OK.";
       return msg;
@@ -944,11 +937,11 @@
       if (!container) return;
 
       const win = window.open('', '_blank');
-      win.document.write('<html><head><title>Monatsbericht – WorkTime</title>');
+      win.document.write('<html><head><title>Monatsbericht – Mitarbeiterportal</title>');
       win.document.write('<meta charset="UTF-8">');
       win.document.write('<style>body{font-family:Arial,sans-serif;padding:16px;} table{width:100%;border-collapse:collapse;font-size:14px;} th,td{border:1px solid #ccc;padding:4px;} th{text-align:left;background:#f0f0f0;}</style>');
       win.document.write('</head><body>');
-      win.document.write('<h2>Monatsbericht – WorkTime</h2>');
+      win.document.write('<h2>Monatsbericht – Mitarbeiterportal</h2>');
       win.document.write('<p>Monat: ' + getCurrentMonthKey() + '</p>');
       win.document.write(container.innerHTML);
       win.document.write('</body></html>');
@@ -1060,7 +1053,6 @@
       win.document.write('</body></html>');
       win.document.close();
       win.focus();
-      // aqui o chefe escolhe "Drucken" ou "Als PDF speichern"
     }
 
     if (btnExportWord) {
