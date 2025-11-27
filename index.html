@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -13,7 +12,7 @@
     }
     body {
       font-family: Arial, sans-serif;
-      padding: 12px;
+      padding: 16px;
       max-width: 1000px;
       margin: 0 auto;
       background: #f0f2f5;
@@ -128,44 +127,65 @@
       }
     }
 
-    /* TOPO COM LOGO E BANDEIRAS */
+    /* ----- BARRA SUPERIOR: LOGO + BANDEIRAS ----- */
     .top-header {
       width: 100%;
+      max-width: 1000px;
+      margin: 10px auto 10px auto;
       background: #ffffff;
-      border-radius: 12px;
-      padding: 8px 16px;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.10);
+      border-radius: 16px;
+      padding: 18px 22px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.13);
+
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 14px;
+      gap: 10px;
     }
 
     .logo-box {
       display: flex;
       align-items: center;
       justify-content: flex-start;
-      max-width: 70%;
+      flex: 1;
     }
 
     .logo-img {
-      max-height: 50px;
+      max-height: 70px;         /* logótipo maior e mais visível */
+      height: auto;
       width: auto;
-      object-fit: contain;
       display: block;
     }
 
     .lang-switch {
       display: flex;
-      gap: 6px;
       align-items: center;
+      gap: 10px;
+      padding: 4px 8px;
+      background: #ffffff;
+      border-radius: 8px;
     }
+
     .lang-flag {
-      width: 28px;
-      height: 18px;
-      border-radius: 3px;
-      border: 1px solid #ccc;
-      cursor: default; /* só decorativo por enquanto */
+      width: 36px;   /* bandeiras mais legíveis */
+      height: 24px;
+      object-fit: cover;
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+    }
+
+    @media (max-width: 600px) {
+      .top-header {
+        padding: 14px 14px;
+        border-radius: 12px;
+      }
+      .logo-img {
+        max-height: 60px;
+      }
+      .lang-flag {
+        width: 32px;
+        height: 22px;
+      }
     }
 
     /* cartão login com cores da bandeira italiana */
@@ -225,10 +245,12 @@
            alt="WorkTime – Stempel System"
            class="logo-img">
     </div>
+
     <div class="lang-switch">
-      <img class="lang-flag" src="https://flagcdn.com/w20/de.png" alt="Deutsch">
-      <img class="lang-flag" src="https://flagcdn.com/w20/pt.png" alt="Português">
-      <img class="lang-flag" src="https://flagcdn.com/w20/it.png" alt="Italiano">
+      <!-- por enquanto só decorativo; podemos ligar à tradução depois -->
+      <img class="lang-flag" src="https://flagcdn.com/w40/de.png" alt="Deutsch">
+      <img class="lang-flag" src="https://flagcdn.com/w40/pt.png" alt="Português">
+      <img class="lang-flag" src="https://flagcdn.com/w40/it.png" alt="Italiano">
     </div>
   </header>
 
@@ -644,7 +666,6 @@
       employeeSelect.innerHTML = '<option value="">-- Mitarbeiter wählen --</option>';
       // Select do plano
       planEmployeeSelect.innerHTML = '<option value="">-- Mitarbeiter wählen --</option>';
-
       // Select do export
       exportEmployeeSelect.innerHTML = '<option value="">-- Mitarbeiter wählen --</option>';
 
@@ -1097,7 +1118,7 @@
       win.document.write('</body></html>');
       win.document.close();
       win.focus();
-      // chefe escolhe "Drucken" ou "Als PDF speichern"
+      // aqui o chefe escolhe "Drucken" ou "Als PDF speichern"
     }
 
     if (btnExportWord) {
