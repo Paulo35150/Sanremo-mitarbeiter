@@ -128,7 +128,7 @@
       }
     }
 
-    /* TOPO: BANNER COM LOGO + BANDEIRAS */
+    /* BANNER COM LOGO HORIZONTAL + BANDEIRAS */
     .top-header {
       display: flex;
       align-items: center;
@@ -136,8 +136,8 @@
       background: #ffffff;
       border-radius: 18px;
       padding: 16px 20px;
-      margin-bottom: 18px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      margin-bottom: 18px;
     }
 
     .logo-box {
@@ -146,44 +146,47 @@
       align-items: center;
     }
 
-    /* LOGO GRANDE (aprox. metade da barra em tablet) */
+    /* tam. do logo -> AQUI PODES AUMENTAR MAIS SE QUISERES */
     .logo-img {
-      max-width: 65%;
-      max-height: 130px;
+      max-width: 95%;
+      max-height: 170px;
       width: auto;
       height: auto;
       display: block;
     }
 
-    /* BANDEIRAS – sem sombras, alinhadas à direita */
+    /* BANDEIRAS SEM SOMBRA */
     .lang-switch {
       display: flex;
-      gap: 8px;
+      gap: 10px;
       align-items: center;
       justify-content: flex-end;
-      min-width: 140px;
     }
 
     .lang-flag {
-      width: 40px;
-      height: 26px;
+      width: 42px;
+      height: 28px;
       border-radius: 6px;
-      cursor: pointer;
-      box-shadow: none !important;
-      border: none !important;
-      outline: none !important;
-      background: transparent !important;
       object-fit: cover;
+      border: 2px solid transparent;
+      background: none;
     }
 
-    .lang-flag:focus {
-      outline: none !important;
-      box-shadow: none !important;
+    .lang-flag:hover {
+      border-color: #1976d2;
+      cursor: pointer;
     }
 
-    .lang-flag.active {
-      box-shadow: 0 0 0 2px #1976d2;
-      border-radius: 10px;
+    footer {
+      margin-top: 24px;
+      text-align: center;
+      font-size: 12px;
+      color: #666;
+    }
+    footer a {
+      color: #1976d2;
+      text-decoration: none;
+      margin: 0 4px;
     }
 
     /* cartão login com cores da bandeira italiana */
@@ -220,18 +223,6 @@
     .ds-block h4 {
       margin: 0 0 6px 0;
     }
-
-    footer {
-      margin-top: 24px;
-      text-align: center;
-      font-size: 12px;
-      color: #666;
-    }
-    footer a {
-      color: #1976d2;
-      text-decoration: none;
-      margin: 0 4px;
-    }
   </style>
 </head>
 <body>
@@ -239,37 +230,37 @@
   <!-- TOPO: LOGO HORIZONTAL + BANDEIRAS -->
   <header class="top-header">
     <div class="logo-box">
-      <img src="IMG-20251127-WA0009.jpg"
+      <!-- nome EXACTO do ficheiro no GitHub -->
+      <img src="IMG-20251128-WA0000.jpg"
            alt="WorkTime – Stempel System"
            class="logo-img">
     </div>
     <div class="lang-switch">
-      <img class="lang-flag active" data-lang="de" src="https://flagcdn.com/w40/de.png" alt="Deutsch">
-      <img class="lang-flag" data-lang="pt" src="https://flagcdn.com/w40/pt.png" alt="Português">
-      <img class="lang-flag" data-lang="it" src="https://flagcdn.com/w40/it.png" alt="Italiano">
+      <img class="lang-flag" src="https://flagcdn.com/w40/de.png" alt="DE" onclick="setLanguage('de')">
+      <img class="lang-flag" src="https://flagcdn.com/w40/pt.png" alt="PT" onclick="setLanguage('pt')">
+      <img class="lang-flag" src="https://flagcdn.com/w40/it.png" alt="IT" onclick="setLanguage('it')">
     </div>
   </header>
 
   <!-- LOGIN DO CHEFE -->
   <div class="section chef-login-card">
-    <h3 data-i18n="chef_login_title">Chef Login</h3>
-    <label for="chefPinInput" data-i18n="chef_pin_label">PIN eingeben:</label>
+    <h3 id="t-chef-login">Chef Login</h3>
+    <label for="chefPinInput" id="t-pin-label">PIN eingeben:</label>
     <input type="password" id="chefPinInput" placeholder="PIN">
 
     <div style="display:flex; gap:10px; margin-top:8px;">
-      <button id="btnChefLogin" class="btn-primary" style="flex:1;" data-i18n="login_btn">
+      <button id="btnChefLogin" class="btn-primary" style="flex:1;">
         Login
       </button>
-      <button id="btnChefLogout" class="btn-secondary" style="flex:1;" data-i18n="logout_btn">
+      <button id="btnChefLogout" class="btn-secondary" style="flex:1;">
         Logout
       </button>
     </div>
 
     <p id="chefLoginStatus"></p>
-    <small data-i18n="chef_login_hint">
-      Nach erfolgreichem Login werden die Chef-Bereiche
-      (Mitarbeiter verwalten, Dienstplan / WhatsApp, Monatsbericht &amp; Export, Datenschutz)
-      freigeschaltet.
+    <small id="t-chef-info">
+      Nach erfolgreichem Login werden die Chef-Bereiche (Mitarbeiter verwalten,
+      Dienstplan / WhatsApp, Monatsbericht &amp; Export, Datenschutz) freigeschaltet.
     </small>
   </div>
 
@@ -279,32 +270,32 @@
 
       <!-- Gestão de empregados -->
       <div class="section">
-        <h3 data-i18n="manage_emp_title">Mitarbeiter verwalten</h3>
+        <h3 id="t-manage-emps">Mitarbeiter verwalten</h3>
 
-        <label for="empName" data-i18n="emp_name_label">Name des Mitarbeiters:</label>
+        <label for="empName" id="t-emp-name-label">Name des Mitarbeiters:</label>
         <input type="text" id="empName" placeholder="z.B. João, Maria, ...">
 
-        <label for="empPhone" data-i18n="emp_phone_label">WhatsApp / Telefonnummer (optional):</label>
+        <label for="empPhone" id="t-emp-phone-label">WhatsApp / Telefonnummer (optional):</label>
         <input type="text" id="empPhone" placeholder="z.B. 491701234567">
 
-        <button id="btnAddEmp" class="btn-primary" style="width:100%; margin-top:10px;" data-i18n="emp_add_btn">
-          Mitarbeiter hinzufügen
+        <button id="btnAddEmp" class="btn-primary" style="width:100%; margin-top:10px;">
+          <span id="t-add-emp">Mitarbeiter hinzufügen</span>
         </button>
 
         <div id="employeeList" style="margin-top:12px;">
           <!-- lista de empregados -->
         </div>
 
-        <small data-i18n="emp_storage_hint">
+        <small id="t-emp-note">
           Mitarbeiterliste, Stunden, Überstunden und Historie werden im Browser (localStorage) gespeichert.
         </small>
       </div>
 
       <!-- Plano + WhatsApp -->
       <div class="section">
-        <h3 data-i18n="plan_title">Dienstplan &amp; WhatsApp</h3>
+        <h3 id="t-plan-whatsapp">Dienstplan &amp; WhatsApp</h3>
 
-        <label for="planEmployeeSelect" data-i18n="plan_emp_label">Mitarbeiter auswählen:</label>
+        <label for="planEmployeeSelect" id="t-plan-choose-emp">Mitarbeiter auswählen:</label>
         <select id="planEmployeeSelect">
           <option value="">-- Mitarbeiter wählen --</option>
         </select>
@@ -313,29 +304,29 @@
           Stunden diesen Monat: 0 | Überstundenkonto: 0
         </div>
 
-        <label for="date" data-i18n="plan_date_label">Tag:</label>
+        <label for="date" id="t-date-label">Tag:</label>
         <input type="date" id="date">
 
-        <label for="timeFrom" data-i18n="plan_from_label">Von (Uhrzeit):</label>
+        <label for="timeFrom" id="t-from-label">Von (Uhrzeit):</label>
         <input type="time" id="timeFrom">
 
-        <label for="timeTo" data-i18n="plan_to_label">Bis (Uhrzeit):</label>
+        <label for="timeTo" id="t-to-label">Bis (Uhrzeit):</label>
         <input type="time" id="timeTo">
 
         <div class="box">
-          <button id="btnPreview" class="btn-secondary" style="width:100%; margin-bottom:6px;" data-i18n="preview_btn">
-            Nachricht anzeigen
+          <button id="btnPreview" class="btn-secondary" style="width:100%; margin-bottom:6px;">
+            <span id="t-show-msg">Nachricht anzeigen</span>
           </button>
-          <button id="btnWhatsapp" class="btn-primary" style="width:100%;" data-i18n="whatsapp_btn">
-            WhatsApp öffnen
+          <button id="btnWhatsapp" class="btn-primary" style="width:100%;">
+            <span id="t-open-wa">WhatsApp öffnen</span>
           </button>
-          <p style="font-size:12px; margin-top:6px;" data-i18n="whatsapp_hint">
+          <p style="font-size:12px; margin-top:6px;" id="t-wa-hint">
             WhatsApp wird mit vorbereiteter Nachricht geöffnet. Du entscheidest, ob du sendest.
           </p>
         </div>
 
         <div class="box">
-          <b data-i18n="preview_title">Vorschau Nachricht:</b>
+          <b id="t-preview-title">Vorschau Nachricht:</b>
           <p id="previewText" style="white-space: pre-wrap; margin-top: 8px;">
             (Noch keine Nachricht)
           </p>
@@ -344,8 +335,8 @@
 
       <!-- MONATSBERICHT (CHEF) -->
       <div class="section">
-        <h3 data-i18n="month_report_title">Monatsbericht (Chef)</h3>
-        <p style="font-size: 13px; margin-bottom:8px;" data-i18n="month_report_hint">
+        <h3 id="t-month-report">Monatsbericht (Chef)</h3>
+        <p style="font-size: 13px; margin-bottom:8px;" id="t-month-report-text">
           Übersicht aller Mitarbeiter für den aktuellen Monat.
         </p>
 
@@ -353,35 +344,35 @@
           <!-- tabela gerada por JavaScript -->
         </div>
 
-        <button class="btn-primary" style="width:100%; margin-top:10px;" onclick="printMonthlyReport()" data-i18n="print_month_report_btn">
-          Drucken / als PDF speichern
+        <button class="btn-primary" style="width:100%; margin-top:10px;" onclick="printMonthlyReport()">
+          <span id="t-print-report">Drucken / als PDF speichern</span>
         </button>
       </div>
 
       <!-- MONATS-EXPORT COM HISTÓRICO DETALHADO -->
       <div class="section" id="exportSection">
-        <h3 data-i18n="export_title">Monats-Export (Word / Drucker)</h3>
-        <p style="font-size:13px; margin-bottom:10px;" data-i18n="export_hint">
+        <h3 id="t-month-export">Monats-Export (Word / Drucker)</h3>
+        <p style="font-size:13px; margin-bottom:10px;" id="t-month-export-text">
           Export pro Mitarbeiter und Monat – ideal für den Steuerberater.
           Es wird ein Monatsblatt mit allen Tagen, Arbeitsbeginn und Arbeitsende erstellt,
           das du drucken oder als PDF speichern kannst.
         </p>
 
-        <label for="exportEmployeeSelect"><b data-i18n="export_emp_label">Mitarbeiter auswählen:</b></label>
+        <label for="exportEmployeeSelect"><b id="t-export-choose-emp">Mitarbeiter auswählen:</b></label>
         <select id="exportEmployeeSelect">
           <option value="">-- Mitarbeiter wählen --</option>
         </select>
 
-        <label for="exportMonthSelect" style="margin-top:10px;"><b data-i18n="export_month_label">Monat auswählen:</b></label>
+        <label for="exportMonthSelect" style="margin-top:10px;"><b id="t-export-month">Monat auswählen:</b></label>
         <select id="exportMonthSelect">
-          <!-- será preenchido por JS -->
+          <!-- wird per JavaScript mit Monaten gefüllt -->
         </select>
 
-        <button id="btnExportWord" class="btn-primary" style="width:100%; margin-top:14px;" data-i18n="export_btn">
-          Word / Drucker – Monatsblatt erstellen
+        <button id="btnExportWord" class="btn-primary" style="width:100%; margin-top:14px;">
+          <span id="t-export-btn">Word / Drucker – Monatsblatt erstellen</span>
         </button>
 
-        <small id="exportInfo" style="display:block; margin-top:8px; font-size:12px; color:#555;" data-i18n="export_info">
+        <small id="exportInfo" style="display:block; margin-top:8px; font-size:12px; color:#555;">
           Hinweis: Es wird ein neues Fenster mit einer Tabelle geöffnet.
           Von dort kannst du direkt drucken oder als PDF speichern.
         </small>
@@ -427,9 +418,9 @@
     <!-- SECÇÃO: Stempeluhr – para os empregados (sempre visível) -->
     <div>
       <div class="section">
-        <h3 data-i18n="clock_title">Stempeluhr (für Mitarbeiter)</h3>
+        <h3 id="t-stempel-title">Stempeluhr (für Mitarbeiter)</h3>
 
-        <label for="employeeSelect" data-i18n="clock_emp_label">Mitarbeiter auswählen:</label>
+        <label for="employeeSelect" id="t-stempel-choose">Mitarbeiter auswählen:</label>
         <select id="employeeSelect">
           <option value="">-- Mitarbeiter wählen --</option>
         </select>
@@ -438,21 +429,21 @@
           Stunden diesen Monat: 0 | Überstundenkonto: 0
         </div>
 
-        <div id="status" data-i18n="clock_ready">Bereit zum Stempeln.</div>
+        <div id="status">Bereit zum Stempeln.</div>
 
-        <button id="btnIn" class="btn-primary" style="width:100%; margin-top:10px;" data-i18n="clock_in_btn">
-          Einstempeln
+        <button id="btnIn" class="btn-primary" style="width:100%; margin-top:10px;">
+          <span id="t-btn-in">Einstempeln</span>
         </button>
-        <button id="btnOut" class="btn-secondary" style="width:100%; margin-top:8px;" data-i18n="clock_out_btn">
-          Ausstempeln
+        <button id="btnOut" class="btn-secondary" style="width:100%; margin-top:8px;">
+          <span id="t-btn-out">Ausstempeln</span>
         </button>
-        <button id="btnUndo" class="btn-danger" style="width:100%; margin-top:8px;" data-i18n="clock_undo_btn">
-          Letzten Eintrag löschen
+        <button id="btnUndo" class="btn-danger" style="width:100%; margin-top:8px;">
+          <span id="t-btn-undo">Letzten Eintrag löschen</span>
         </button>
 
-        <div id="log"><b data-i18n="today_entries">Heutige Einträge:</b><br></div>
+        <div id="log"><b>Heutige Einträge:</b><br></div>
 
-        <small data-i18n="rule_text">
+        <small id="t-rule">
           Regel: Maximal 40 Stunden im Monat. Alles darüber geht ins Überstundenkonto (Bank von Stunden).
         </small>
       </div>
@@ -460,8 +451,8 @@
   </div>
 
   <footer>
-    <a href="#" id="linkImpressum" data-i18n="impressum_link">Impressum</a> |
-    <a href="#" id="linkDatenschutz" data-i18n="privacy_link">Datenschutz</a>
+    <a href="#" id="linkImpressum">Impressum</a> |
+    <a href="#" id="linkDatenschutz">Datenschutz</a>
   </footer>
 
   <script>
@@ -483,13 +474,13 @@
         chefArea.style.display = 'block';
         datenschutzBox.style.display = 'block';
         chefLoginStatus.style.color = 'green';
-        chefLoginStatus.textContent = currentTranslations.chef_login_success || 'Login erfolgreich. Chef-Bereiche sind freigeschaltet.';
+        chefLoginStatus.textContent = 'Login erfolgreich. Chef-Bereiche sind freigeschaltet.';
         chefPinInput.value = '';
       } else {
         chefArea.style.display = 'none';
         datenschutzBox.style.display = 'none';
         chefLoginStatus.style.color = '#555';
-        chefLoginStatus.textContent = '';
+        chefLoginStatus.textContent = 'Abgemeldet.';
         chefPinInput.value = '';
       }
     }
@@ -500,7 +491,7 @@
         setChefLoggedIn(true);
       } else {
         chefLoginStatus.style.color = 'red';
-        chefLoginStatus.textContent = currentTranslations.chef_pin_wrong || 'Falscher PIN.';
+        chefLoginStatus.textContent = 'Falscher PIN.';
       }
     });
 
@@ -619,15 +610,13 @@
       const empId = employeeSelect.value;
       const emp = employees.find(e => e.id === empId);
       if (!emp) {
-        hoursInfoEl.innerHTML = (currentTranslations.month_info_empty || 'Stunden diesen Monat: 0 | Überstundenkonto: 0');
+        hoursInfoEl.innerHTML = 'Stunden diesen Monat: 0 | Überstundenkonto: 0';
         return;
       }
       const { total, bank } = getHoursAndBank(emp);
-      let text = (currentTranslations.month_info || 'Stunden diesen Monat: {H} | Überstundenkonto: {B}')
-        .replace('{H}', total.toFixed(2))
-        .replace('{B}', bank.toFixed(2));
+      let text = `Stunden diesen Monat: ${total.toFixed(2)} | Überstundenkonto: ${bank.toFixed(2)}`;
       if (total > MAX_HOURS_PER_MONTH) {
-        text += ' – <span class="warning">' + (currentTranslations.limit_warning || 'Limit 40h überschritten!') + '</span>';
+        text += ' – <span class="warning">Limit 40h überschritten!</span>';
       }
       hoursInfoEl.innerHTML = text;
     }
@@ -636,44 +625,22 @@
       const empId = planEmployeeSelect.value;
       const emp = employees.find(e => e.id === empId);
       if (!emp) {
-        planHoursInfoEl.innerHTML = (currentTranslations.month_info_empty || 'Stunden diesen Monat: 0 | Überstundenkonto: 0');
+        planHoursInfoEl.innerHTML = 'Stunden diesen Monat: 0 | Überstundenkonto: 0';
         return;
       }
       const { total, bank } = getHoursAndBank(emp);
-      let text = (currentTranslations.month_info || 'Stunden diesen Monat: {H} | Überstundenkonto: {B}')
-        .replace('{H}', total.toFixed(2))
-        .replace('{B}', bank.toFixed(2));
+      let text = `Stunden diesen Monat: ${total.toFixed(2)} | Überstundenkonto: ${bank.toFixed(2)}`;
       if (total > MAX_HOURS_PER_MONTH) {
-        text += ' – <span class="warning">' + (currentTranslations.limit_warning || 'Limit 40h überschritten!') + '</span>';
+        text += ' – <span class="warning">Limit 40h überschritten!</span>';
       }
       planHoursInfoEl.innerHTML = text;
     }
 
-    // ------- LOG diário: NÃO acumula de dia para dia -------
-    function getTodayKey() {
-      return new Date().toISOString().substring(0,10); // YYYY-MM-DD
-    }
-
-    function initDailyLog() {
-      const storedDate = localStorage.getItem('wt_lastLogDate');
-      const storedHtml = localStorage.getItem('wt_logHtml');
-      const today = getTodayKey();
-
-      if (storedDate === today && storedHtml) {
-        logEl.innerHTML = storedHtml;
-      } else {
-        // novo dia: limpar log
-        logEl.innerHTML = '<b>' + (currentTranslations.today_entries || 'Heutige Einträge:') + '</b><br>';
-        localStorage.setItem('wt_lastLogDate', today);
-        localStorage.setItem('wt_logHtml', logEl.innerHTML);
-      }
-    }
-
+    // *** Heutige Einträge – NÃO ACUMULA, SÓ ÚLTIMO ***
     function addLog(text) {
-      const now = new Date().toLocaleString('de-DE');
-      logEl.innerHTML += `${text} – <i>${now}</i><br>`;
-      localStorage.setItem('wt_lastLogDate', getTodayKey());
-      localStorage.setItem('wt_logHtml', logEl.innerHTML);
+      const now = new Date().toLocaleString();
+      logEl.innerHTML = '<b>Heutige Einträge:</b><br>' +
+                        `${text} – <i>${now}</i><br>`;
       logEl.scrollTop = logEl.scrollHeight;
     }
 
@@ -685,12 +652,8 @@
 
     // ================== UI DE EMPREGADOS ==================
     function refreshEmployeeUI() {
-      // Select da Stempeluhr
       employeeSelect.innerHTML = '<option value="">-- Mitarbeiter wählen --</option>';
-      // Select do plano
       planEmployeeSelect.innerHTML = '<option value="">-- Mitarbeiter wählen --</option>';
-
-      // Select do export
       exportEmployeeSelect.innerHTML = '<option value="">-- Mitarbeiter wählen --</option>';
 
       employees.forEach(emp => {
@@ -710,7 +673,6 @@
         exportEmployeeSelect.appendChild(opt3);
       });
 
-      // Lista para o chefe
       employeeListDiv.innerHTML = '';
       employees.forEach(emp => {
         const row = document.createElement('div');
@@ -719,10 +681,10 @@
           <span>${emp.name} ${emp.phone ? '(' + maskPhone(emp.phone) + ')' : ''}</span>
         `;
         const btnDel = document.createElement('button');
-        btnDel.textContent = currentTranslations.delete_btn || 'Löschen';
+        btnDel.textContent = 'Löschen';
         btnDel.className = 'btn-danger';
         btnDel.onclick = () => {
-          if (confirm((currentTranslations.delete_confirm || 'Mitarbeiter wirklich löschen?') + ' "' + emp.name + '"')) {
+          if (confirm('Mitarbeiter "' + emp.name + '" wirklich löschen?')) {
             employees = employees.filter(e => e.id !== emp.id);
             saveEmployees();
             refreshEmployeeUI();
@@ -740,10 +702,9 @@
       btnOut.disabled = disabled;
       btnUndo.disabled = disabled;
       if (disabled) {
-        statusEl.textContent = currentTranslations.no_emp_text ||
-          'Keine Mitarbeiter angelegt. Chef muss zuerst Mitarbeiter hinzufügen.';
+        statusEl.textContent = 'Keine Mitarbeiter angelegt. Chef muss zuerst Mitarbeiter hinzufügen.';
       } else {
-        statusEl.textContent = currentTranslations.clock_ready || 'Bereit zum Stempeln.';
+        statusEl.textContent = 'Bereit zum Stempeln.';
       }
 
       buildExportMonthOptions();
@@ -754,10 +715,10 @@
       const empId = employeeSelect.value;
       const emp = employees.find(e => e.id === empId);
       if (emp && emp.activeSessionStart) {
-        statusEl.textContent = (currentTranslations.clock_running || 'Mitarbeiter ist aktuell eingestempelt (seit {T}).')
-          .replace('{T}', new Date(emp.activeSessionStart).toLocaleString());
+        statusEl.textContent = 'Mitarbeiter ist aktuell eingestempelt (seit ' +
+          new Date(emp.activeSessionStart).toLocaleString() + ').';
       } else {
-        statusEl.textContent = currentTranslations.clock_ready || 'Bereit zum Stempeln.';
+        statusEl.textContent = 'Bereit zum Stempeln.';
       }
     });
 
@@ -770,7 +731,7 @@
       const name = empNameInput.value.trim();
       const phone = empPhoneInput.value.trim();
       if (!name) {
-        alert(currentTranslations.emp_name_required || 'Bitte einen Namen eingeben.');
+        alert('Bitte einen Namen eingeben.');
         return;
       }
       const emp = {
@@ -794,35 +755,35 @@
     btnIn.addEventListener('click', () => {
       const empId = employeeSelect.value;
       if (!empId) {
-        alert(currentTranslations.select_emp_first || 'Bitte zuerst einen Mitarbeiter auswählen.');
+        alert('Bitte zuerst einen Mitarbeiter auswählen.');
         return;
       }
       const emp = employees.find(e => e.id === empId);
       if (!emp) return;
 
       if (emp.activeSessionStart) {
-        alert(currentTranslations.already_clocked_in || 'Dieser Mitarbeiter ist bereits eingestempelt.');
+        alert('Dieser Mitarbeiter ist bereits eingestempelt.');
         return;
       }
 
       emp.activeSessionStart = new Date().toISOString();
       saveEmployees();
-      statusEl.textContent = (currentTranslations.clock_in_status || 'Eingestempelt um {T}.')
-        .replace('{T}', new Date(emp.activeSessionStart).toLocaleString());
+      statusEl.textContent = 'Eingestempelt um ' +
+        new Date(emp.activeSessionStart).toLocaleString() + '.';
       addLog(emp.name + ' eingestempelt');
     });
 
     btnOut.addEventListener('click', () => {
       const empId = employeeSelect.value;
       if (!empId) {
-        alert(currentTranslations.select_emp_first || 'Bitte zuerst einen Mitarbeiter auswählen.');
+        alert('Bitte zuerst einen Mitarbeiter auswählen.');
         return;
       }
       const emp = employees.find(e => e.id === empId);
       if (!emp) return;
 
       if (!emp.activeSessionStart) {
-        alert(currentTranslations.not_clocked_in || 'Dieser Mitarbeiter ist noch nicht eingestempelt.');
+        alert('Dieser Mitarbeiter ist noch nicht eingestempelt.');
         return;
       }
 
@@ -845,7 +806,6 @@
       }
       emp.timeBank[monthKey] = bank;
 
-      // guardar sessão completa
       if (!emp.sessions) emp.sessions = [];
       emp.sessions.push({
         start: start.toISOString(),
@@ -856,11 +816,9 @@
       emp.activeSessionStart = null;
       saveEmployees();
 
-      statusEl.textContent = (currentTranslations.clock_out_status ||
-        'Ausgestempelt. Gearbeitete Zeit: {H} Std. Gesamt in diesem Monat: {S} Std.')
-        .replace('{H}', hours.toFixed(2))
-        .replace('{S}', newTotal.toFixed(2));
-
+      statusEl.textContent = 'Ausgestempelt. Gearbeitete Zeit: ' +
+        hours.toFixed(2) + ' Std. Gesamt in diesem Monat: ' +
+        newTotal.toFixed(2) + ' Std.';
       addLog(emp.name + ' ausgestempelt (' + hours.toFixed(2) + ' Std.)');
 
       updateHoursInfo();
@@ -872,22 +830,21 @@
     btnUndo.addEventListener('click', () => {
       const empId = employeeSelect.value;
       if (!empId) {
-        alert(currentTranslations.select_emp_first || 'Bitte zuerst einen Mitarbeiter auswählen.');
+        alert('Bitte zuerst einen Mitarbeiter auswählen.');
         return;
       }
       const emp = employees.find(e => e.id === empId);
       if (!emp || !emp.sessions || emp.sessions.length === 0) {
-        alert(currentTranslations.no_entries_to_delete || 'Keine Einträge zum Löschen vorhanden.');
+        alert('Keine Einträge zum Löschen vorhanden.');
         return;
       }
 
-      if (!confirm((currentTranslations.delete_last_confirm || 'Letzten Eintrag wirklich löschen?') + ' "' + emp.name + '"')) {
+      if (!confirm('Letzten Eintrag für "' + emp.name + '" wirklich löschen?')) {
         return;
       }
 
       const last = emp.sessions.pop();
       const dateKey = last.start.substring(0, 7); // YYYY-MM
-      // Recalcular horas para esse mês
       let sum = 0;
       emp.sessions.forEach(s => {
         if (s.start.substring(0, 7) === dateKey) {
@@ -927,28 +884,27 @@
       const { total, bank } = getHoursAndBankForCurrentMonth(emp);
 
       let hoursLine =
-        (currentTranslations.msg_hours_line || 'Aktueller Monat: {H} Std. (Überstundenkonto: {B} Std.)')
-          .replace('{H}', total.toFixed(2))
-          .replace('{B}', bank.toFixed(2));
+        `Aktueller Monat: ${total.toFixed(2)} Std. (Überstundenkonto: ${bank.toFixed(2)} Std.)`;
       if (total > MAX_HOURS_PER_MONTH) {
-        hoursLine += " – " + (currentTranslations.limit_warning || 'LIMIT 40h überschritten!');
+        hoursLine += " – LIMIT 40h überschritten!";
       }
 
       const msg =
-        "WorkTime – Dienstplan\n\n" +
-        (currentTranslations.msg_hello || "Hallo {N},\n\n").replace('{N}', emp.name) +
-        (currentTranslations.msg_body || "dein Dienst:\n") +
-        "📅 " + (currentTranslations.msg_date || "Datum") + ": " + dateDE + "\n" +
-        "⏰ " + (currentTranslations.msg_time || "Zeit") + ": " + tFrom + " – " + tTo + " Uhr\n\n" +
+        "Eiscafé Sanremo – Dienstplan\n\n" +
+        "Hallo " + emp.name + ",\n\n" +
+        "dein Dienst:\n" +
+        "📅 Datum: " + dateDE + "\n" +
+        "⏰ Zeit: " + tFrom + " – " + tTo + " Uhr\n" +
+        "📍 Ort: Eiscafé Sanremo, Bad Berleburg\n\n" +
         hoursLine + "\n\n" +
-        (currentTranslations.msg_confirm || "Bitte bestätige mit OK.");
+        "Bitte bestätige mit OK.";
       return msg;
     }
 
     btnPreview.addEventListener('click', () => {
       const msg = buildMessage();
       if (!msg) {
-        alert(currentTranslations.fill_plan_fields || "Bitte Mitarbeiter, Tag und Zeiten ausfüllen.");
+        alert("Bitte Mitarbeiter, Tag und Zeiten ausfüllen.");
         return;
       }
       previewText.textContent = msg;
@@ -960,16 +916,16 @@
       const msg = buildMessage();
 
       if (!emp) {
-        alert(currentTranslations.select_emp_first || "Bitte Mitarbeiter wählen.");
+        alert("Bitte Mitarbeiter wählen.");
         return;
       }
       if (!msg) {
-        alert(currentTranslations.fill_plan_fields || "Bitte Tag und Zeiten eintragen.");
+        alert("Bitte Tag und Zeiten eintragen.");
         return;
       }
 
       if (!emp.phone) {
-        alert(currentTranslations.no_phone || "Für diesen Mitarbeiter ist keine Telefonnummer hinterlegt.");
+        alert("Für diesen Mitarbeiter ist keine Telefonnummer hinterlegt.");
         return;
       }
 
@@ -986,7 +942,7 @@
       if (!container) return;
 
       if (!employees || employees.length === 0) {
-        container.innerHTML = '<em>' + (currentTranslations.no_emp_text || 'Keine Mitarbeiter angelegt.') + '</em>';
+        container.innerHTML = '<em>Keine Mitarbeiter angelegt.</em>';
         return;
       }
 
@@ -994,9 +950,9 @@
 
       let html = '<table style="width:100%; border-collapse: collapse; font-size:14px;">';
       html += '<thead><tr>' +
-              '<th style="border-bottom:1px solid #ccc; text-align:left; padding:4px;">' + (currentTranslations.emp_col || 'Mitarbeiter') + '</th>' +
-              '<th style="border-bottom:1px solid #ccc; text-align:right; padding:4px;">' + (currentTranslations.hours_col || 'Stunden im Monat') + '</th>' +
-              '<th style="border-bottom:1px solid #ccc; text-align:right; padding:4px;">' + (currentTranslations.bank_col || 'Überstundenkonto') + '</th>' +
+              '<th style="border-bottom:1px solid #ccc; text-align:left; padding:4px;">Mitarbeiter</th>' +
+              '<th style="border-bottom:1px solid #ccc; text-align:right; padding:4px;">Stunden im Monat</th>' +
+              '<th style="border-bottom:1px solid #ccc; text-align:right; padding:4px;">Überstundenkonto</th>' +
               '</tr></thead><tbody>';
 
       let totalHoursAll = 0;
@@ -1015,7 +971,7 @@
       });
 
       html += '<tr>' +
-        '<td style="padding:4px; font-weight:bold; text-align:right;">' + (currentTranslations.sum_col || 'Summe:') + '</td>' +
+        '<td style="padding:4px; font-weight:bold; text-align:right;">Summe:</td>' +
         '<td style="padding:4px; font-weight:bold; text-align:right;">' + totalHoursAll.toFixed(2) + '</td>' +
         '<td style="padding:4px; font-weight:bold; text-align:right;">' + totalBankAll.toFixed(2) + '</td>' +
         '</tr>';
@@ -1030,11 +986,11 @@
       if (!container) return;
 
       const win = window.open('', '_blank');
-      win.document.write('<html><head><title>Monatsbericht – WorkTime</title>');
+      win.document.write('<html><head><title>Monatsbericht – Mitarbeiterportal</title>');
       win.document.write('<meta charset="UTF-8">');
       win.document.write('<style>body{font-family:Arial,sans-serif;padding:16px;} table{width:100%;border-collapse:collapse;font-size:14px;} th,td{border:1px solid #ccc;padding:4px;} th{text-align:left;background:#f0f0f0;}</style>');
       win.document.write('</head><body>');
-      win.document.write('<h2>Monatsbericht – WorkTime</h2>');
+      win.document.write('<h2>Monatsbericht – Mitarbeiterportal</h2>');
       win.document.write('<p>Monat: ' + getCurrentMonthKey() + '</p>');
       win.document.write(container.innerHTML);
       win.document.write('</body></html>');
@@ -1146,7 +1102,7 @@
       win.document.write('</body></html>');
       win.document.close();
       win.focus();
-      // chefe escolhe "Drucken" ou "Als PDF speichern"
+      // o chefe depois escolhe "Drucken" ou "Als PDF speichern"
     }
 
     if (btnExportWord) {
@@ -1155,17 +1111,17 @@
         const monthValue = exportMonthSelect.value;
 
         if (!empId) {
-          alert(currentTranslations.select_emp_first || 'Bitte einen Mitarbeiter auswählen.');
+          alert('Bitte einen Mitarbeiter auswählen.');
           return;
         }
         if (!monthValue) {
-          alert(currentTranslations.select_month_first || 'Bitte einen Monat auswählen.');
+          alert('Bitte einen Monat auswählen.');
           return;
         }
 
         const emp = employees.find(e => e.id === empId);
         if (!emp) {
-          alert(currentTranslations.emp_not_found || 'Mitarbeiter nicht gefunden.');
+          alert('Mitarbeiter nicht gefunden.');
           return;
         }
 
@@ -1181,7 +1137,7 @@
     document.getElementById('linkDatenschutz').addEventListener('click', function(e) {
       e.preventDefault();
       if (!isChefLoggedIn) {
-        alert(currentTranslations.privacy_only_chef || 'Datenschutzhinweise sind nur nach Chef-Login sichtbar.');
+        alert('Datenschutzhinweise sind nur nach Chef-Login sichtbar.');
         return;
       }
       if (datenschutzBox.style.display === 'none') {
@@ -1192,278 +1148,128 @@
 
     document.getElementById('linkImpressum').addEventListener('click', function(e) {
       e.preventDefault();
-      alert(currentTranslations.impressum_text || 'Impressum: Hier kannst du deine Firmenadresse und Kontaktdaten ergänzen.');
+      alert('Impressum: Hier kannst du deine Firmenadresse und Kontaktdaten ergänzen.');
     });
 
-    // ================== TRADUÇÕES (DE / PT / IT) ==================
+    // ================== TRADUÇÃO SIMPLES (DE / PT / IT) ==================
     const translations = {
       de: {
-        chef_login_title: "Chef Login",
-        chef_pin_label: "PIN eingeben:",
-        login_btn: "Login",
-        logout_btn: "Logout",
-        chef_login_hint: "Nach erfolgreichem Login werden die Chef-Bereiche (Mitarbeiter verwalten, Dienstplan / WhatsApp, Monatsbericht & Export, Datenschutz) freigeschaltet.",
-        chef_login_success: "Login erfolgreich. Chef-Bereiche sind freigeschaltet.",
-        chef_pin_wrong: "Falscher PIN.",
-        manage_emp_title: "Mitarbeiter verwalten",
-        emp_name_label: "Name des Mitarbeiters:",
-        emp_phone_label: "WhatsApp / Telefonnummer (optional):",
-        emp_add_btn: "Mitarbeiter hinzufügen",
-        emp_storage_hint: "Mitarbeiterliste, Stunden, Überstunden und Historie werden im Browser (localStorage) gespeichert.",
-        plan_title: "Dienstplan & WhatsApp",
-        plan_emp_label: "Mitarbeiter auswählen:",
-        plan_date_label: "Tag:",
-        plan_from_label: "Von (Uhrzeit):",
-        plan_to_label: "Bis (Uhrzeit):",
-        preview_btn: "Nachricht anzeigen",
-        whatsapp_btn: "WhatsApp öffnen",
-        whatsapp_hint: "WhatsApp wird mit vorbereiteter Nachricht geöffnet. Du entscheidest, ob du sendest.",
-        preview_title: "Vorschau Nachricht:",
-        month_report_title: "Monatsbericht (Chef)",
-        month_report_hint: "Übersicht aller Mitarbeiter für den aktuellen Monat.",
-        print_month_report_btn: "Drucken / als PDF speichern",
-        export_title: "Monats-Export (Word / Drucker)",
-        export_hint: "Export pro Mitarbeiter und Monat – ideal für den Steuerberater. Es wird ein Monatsblatt mit allen Tagen, Arbeitsbeginn und Arbeitsende erstellt, das du drucken oder als PDF speichern kannst.",
-        export_emp_label: "Mitarbeiter auswählen:",
-        export_month_label: "Monat auswählen:",
-        export_btn: "Word / Drucker – Monatsblatt erstellen",
-        export_info: "Hinweis: Es wird ein neues Fenster mit einer Tabelle geöffnet. Von dort kannst du direkt drucken oder als PDF speichern.",
-        clock_title: "Stempeluhr (für Mitarbeiter)",
-        clock_emp_label: "Mitarbeiter auswählen:",
-        clock_ready: "Bereit zum Stempeln.",
-        clock_in_btn: "Einstempeln",
-        clock_out_btn: "Ausstempeln",
-        clock_undo_btn: "Letzten Eintrag löschen",
-        today_entries: "Heutige Einträge:",
-        rule_text: "Regel: Maximal 40 Stunden im Monat. Alles darüber geht ins Überstundenkonto (Bank von Stunden).",
-        impressum_link: "Impressum",
-        privacy_link: "Datenschutz",
-        month_info: "Stunden diesen Monat: {H} | Überstundenkonto: {B}",
-        month_info_empty: "Stunden diesen Monat: 0 | Überstundenkonto: 0",
-        limit_warning: "Limit 40h überschritten!",
-        delete_btn: "Löschen",
-        delete_confirm: "Mitarbeiter wirklich löschen?",
-        no_emp_text: "Keine Mitarbeiter angelegt. Chef muss zuerst Mitarbeiter hinzufügen.",
-        clock_running: "Mitarbeiter ist aktuell eingestempelt (seit {T}).",
-        emp_name_required: "Bitte einen Namen eingeben.",
-        select_emp_first: "Bitte zuerst einen Mitarbeiter auswählen.",
-        already_clocked_in: "Dieser Mitarbeiter ist bereits eingestempelt.",
-        not_clocked_in: "Dieser Mitarbeiter ist noch nicht eingestempelt.",
-        clock_in_status: "Eingestempelt um {T}.",
-        clock_out_status: "Ausgestempelt. Gearbeitete Zeit: {H} Std. Gesamt in diesem Monat: {S} Std.",
-        no_entries_to_delete: "Keine Einträge zum Löschen vorhanden.",
-        delete_last_confirm: "Letzten Eintrag wirklich löschen?",
-        msg_hours_line: "Aktueller Monat: {H} Std. (Überstundenkonto: {B} Std.)",
-        msg_hello: "Hallo {N},\n\n",
-        msg_body: "dein Dienst:\n",
-        msg_date: "Datum",
-        msg_time: "Zeit",
-        msg_confirm: "Bitte bestätige mit OK.",
-        fill_plan_fields: "Bitte Mitarbeiter, Tag und Zeiten ausfüllen.",
-        no_phone: "Für diesen Mitarbeiter ist keine Telefonnummer hinterlegt.",
-        emp_col: "Mitarbeiter",
-        hours_col: "Stunden im Monat",
-        bank_col: "Überstundenkonto",
-        sum_col: "Summe:",
-        select_month_first: "Bitte einen Monat auswählen.",
-        emp_not_found: "Mitarbeiter nicht gefunden.",
-        privacy_only_chef: "Datenschutzhinweise sind nur nach Chef-Login sichtbar.",
-        impressum_text: "Impressum: Hier kannst du deine Firmenadresse und Kontaktdaten ergänzen."
+        't-chef-login': 'Chef Login',
+        't-pin-label': 'PIN eingeben:',
+        't-chef-info': 'Nach erfolgreichem Login werden die Chef-Bereiche (Mitarbeiter verwalten, Dienstplan / WhatsApp, Monatsbericht & Export, Datenschutz) freigeschaltet.',
+        't-manage-emps': 'Mitarbeiter verwalten',
+        't-emp-name-label': 'Name des Mitarbeiters:',
+        't-emp-phone-label': 'WhatsApp / Telefonnummer (optional):',
+        't-add-emp': 'Mitarbeiter hinzufügen',
+        't-emp-note': 'Mitarbeiterliste, Stunden, Überstunden und Historie werden im Browser (localStorage) gespeichert.',
+        't-plan-whatsapp': 'Dienstplan & WhatsApp',
+        't-plan-choose-emp': 'Mitarbeiter auswählen:',
+        't-date-label': 'Tag:',
+        't-from-label': 'Von (Uhrzeit):',
+        't-to-label': 'Bis (Uhrzeit):',
+        't-show-msg': 'Nachricht anzeigen',
+        't-open-wa': 'WhatsApp öffnen',
+        't-wa-hint': 'WhatsApp wird mit vorbereiteter Nachricht geöffnet. Du entscheidest, ob du sendest.',
+        't-preview-title': 'Vorschau Nachricht:',
+        't-month-report': 'Monatsbericht (Chef)',
+        't-month-report-text': 'Übersicht aller Mitarbeiter für den aktuellen Monat.',
+        't-print-report': 'Drucken / als PDF speichern',
+        't-month-export': 'Monats-Export (Word / Drucker)',
+        't-month-export-text': 'Export pro Mitarbeiter und Monat – ideal für den Steuerberater.',
+        't-export-choose-emp': 'Mitarbeiter auswählen:',
+        't-export-month': 'Monat auswählen:',
+        't-export-btn': 'Word / Drucker – Monatsblatt erstellen',
+        't-stempel-title': 'Stempeluhr (für Mitarbeiter)',
+        't-stempel-choose': 'Mitarbeiter auswählen:',
+        't-btn-in': 'Einstempeln',
+        't-btn-out': 'Ausstempeln',
+        't-btn-undo': 'Letzten Eintrag löschen',
+        't-rule': 'Regel: Maximal 40 Stunden im Monat. Alles darüber geht ins Überstundenkonto (Bank von Stunden).'
       },
       pt: {
-        chef_login_title: "Login do chefe",
-        chef_pin_label: "Introduzir PIN:",
-        login_btn: "Login",
-        logout_btn: "Logout",
-        chef_login_hint: "Depois do login são desbloqueadas as áreas do chefe (gestão de empregados, plano / WhatsApp, relatório mensal & exportação, proteção de dados).",
-        chef_login_success: "Login com sucesso. Áreas do chefe desbloqueadas.",
-        chef_pin_wrong: "PIN incorreto.",
-        manage_emp_title: "Gerir empregados",
-        emp_name_label: "Nome do empregado:",
-        emp_phone_label: "WhatsApp / Nº de telefone (opcional):",
-        emp_add_btn: "Adicionar empregado",
-        emp_storage_hint: "Lista de empregados e horas são guardadas apenas no navegador (localStorage).",
-        plan_title: "Plano de serviço & WhatsApp",
-        plan_emp_label: "Selecionar empregado:",
-        plan_date_label: "Dia:",
-        plan_from_label: "Das (hora):",
-        plan_to_label: "Até (hora):",
-        preview_btn: "Mostrar mensagem",
-        whatsapp_btn: "Abrir WhatsApp",
-        whatsapp_hint: "O WhatsApp abre com a mensagem preparada. Tu decides se envias.",
-        preview_title: "Pré-visualização:",
-        month_report_title: "Relatório mensal (chefe)",
-        month_report_hint: "Resumo de todos os empregados para o mês atual.",
-        print_month_report_btn: "Imprimir / guardar em PDF",
-        export_title: "Exportação mensal (Word / impressora)",
-        export_hint: "Exportação por empregado e mês – ideal para o contabilista. É criada uma folha mensal com todos os dias.",
-        export_emp_label: "Selecionar empregado:",
-        export_month_label: "Selecionar mês:",
-        export_btn: "Criar folha mensal (Word / Impressora)",
-        export_info: "Abre uma nova janela com a tabela. A partir daí podes imprimir ou guardar em PDF.",
-        clock_title: "Relógio de ponto (para empregados)",
-        clock_emp_label: "Selecionar empregado:",
-        clock_ready: "Pronto para picar o ponto.",
-        clock_in_btn: "Entrar",
-        clock_out_btn: "Sair",
-        clock_undo_btn: "Apagar último registo",
-        today_entries: "Registos de hoje:",
-        rule_text: "Regra: Máximo 40 horas no mês. O resto vai para o banco de horas.",
-        impressum_link: "Impressum",
-        privacy_link: "Proteção de dados",
-        month_info: "Horas neste mês: {H} | Banco de horas: {B}",
-        month_info_empty: "Horas neste mês: 0 | Banco de horas: 0",
-        limit_warning: "Limite de 40h ultrapassado!",
-        delete_btn: "Apagar",
-        delete_confirm: "Apagar este empregado?",
-        no_emp_text: "Nenhum empregado registado. O chefe tem de adicionar primeiro.",
-        clock_running: "Empregado está com ponto marcado (desde {T}).",
-        emp_name_required: "Introduz um nome.",
-        select_emp_first: "Seleciona primeiro um empregado.",
-        already_clocked_in: "Este empregado já está com o ponto marcado.",
-        not_clocked_in: "Este empregado ainda não marcou o ponto.",
-        clock_in_status: "Ponto de entrada às {T}.",
-        clock_out_status: "Saída registada. Horas trabalhadas: {H}. Total no mês: {S}.",
-        no_entries_to_delete: "Não há registos para apagar.",
-        delete_last_confirm: "Apagar o último registo?",
-        msg_hours_line: "Mês atual: {H} h (banco de horas: {B} h)",
-        msg_hello: "Olá {N},\n\n",
-        msg_body: "o teu turno:\n",
-        msg_date: "Data",
-        msg_time: "Hora",
-        msg_confirm: "Por favor confirma com OK.",
-        fill_plan_fields: "Seleciona empregado, dia e horas.",
-        no_phone: "Não há número de telefone registado para este empregado.",
-        emp_col: "Empregado",
-        hours_col: "Horas no mês",
-        bank_col: "Banco de horas",
-        sum_col: "Total:",
-        select_month_first: "Seleciona um mês.",
-        emp_not_found: "Empregado não encontrado.",
-        privacy_only_chef: "Proteção de dados só é visível após login do chefe.",
-        impressum_text: "Impressum: aqui podes colocar morada e contactos da empresa."
+        't-chef-login': 'Login do Chefe',
+        't-pin-label': 'Inserir PIN:',
+        't-chef-info': 'Depois do login ficam disponíveis as áreas do chefe (gestão de empregados, plano / WhatsApp, relatórios e proteção de dados).',
+        't-manage-emps': 'Gerir empregados',
+        't-emp-name-label': 'Nome do empregado:',
+        't-emp-phone-label': 'WhatsApp / Nº de telefone (opcional):',
+        't-add-emp': 'Adicionar empregado',
+        't-emp-note': 'Lista de empregados e horas é guardada apenas neste dispositivo (localStorage).',
+        't-plan-whatsapp': 'Plano de turnos & WhatsApp',
+        't-plan-choose-emp': 'Escolher empregado:',
+        't-date-label': 'Dia:',
+        't-from-label': 'Das (hora):',
+        't-to-label': 'Até (hora):',
+        't-show-msg': 'Ver mensagem',
+        't-open-wa': 'Abrir WhatsApp',
+        't-wa-hint': 'O WhatsApp abre com a mensagem preparada. Tu decides se envias.',
+        't-preview-title': 'Pré-visualização da mensagem:',
+        't-month-report': 'Relatório mensal (Chefe)',
+        't-month-report-text': 'Resumo de todos os empregados para o mês atual.',
+        't-print-report': 'Imprimir / guardar em PDF',
+        't-month-export': 'Exportação mensal (Word / Impressora)',
+        't-month-export-text': 'Exportar por empregado e mês – ideal para o contabilista.',
+        't-export-choose-emp': 'Escolher empregado:',
+        't-export-month': 'Escolher mês:',
+        't-export-btn': 'Criar folha mensal para Word / Impressora',
+        't-stempel-title': 'Relógio de ponto (Empregados)',
+        't-stempel-choose': 'Escolher empregado:',
+        't-btn-in': 'Entrar',
+        't-btn-out': 'Sair',
+        't-btn-undo': 'Apagar último registo',
+        't-rule': 'Regra: Máximo 40 horas por mês. Tudo acima disso vai para o banco de horas.'
       },
       it: {
-        chef_login_title: "Login responsabile",
-        chef_pin_label: "Inserisci PIN:",
-        login_btn: "Login",
-        logout_btn: "Logout",
-        chef_login_hint: "Dopo il login si sbloccano le aree del responsabile (gestione dipendenti, turni / WhatsApp, report mensile ed esportazione, privacy).",
-        chef_login_success: "Login riuscito. Aree del responsabile attive.",
-        chef_pin_wrong: "PIN errato.",
-        manage_emp_title: "Gestione dipendenti",
-        emp_name_label: "Nome del dipendente:",
-        emp_phone_label: "WhatsApp / telefono (opzionale):",
-        emp_add_btn: "Aggiungi dipendente",
-        emp_storage_hint: "Elenco dipendenti e ore vengono salvati solo nel browser (localStorage).",
-        plan_title: "Piano turni & WhatsApp",
-        plan_emp_label: "Seleziona dipendente:",
-        plan_date_label: "Giorno:",
-        plan_from_label: "Dalle (ora):",
-        plan_to_label: "Alle (ora):",
-        preview_btn: "Mostra messaggio",
-        whatsapp_btn: "Apri WhatsApp",
-        whatsapp_hint: "WhatsApp si apre con il messaggio pronto. Decidi tu se inviare.",
-        preview_title: "Anteprima messaggio:",
-        month_report_title: "Report mensile (responsabile)",
-        month_report_hint: "Panoramica di tutti i dipendenti per il mese corrente.",
-        print_month_report_btn: "Stampa / salva PDF",
-        export_title: "Export mensile (Word / stampante)",
-        export_hint: "Export per dipendente e mese – ideale per il commercialista. Viene creata una scheda mensile con tutti i giorni.",
-        export_emp_label: "Seleziona dipendente:",
-        export_month_label: "Seleziona mese:",
-        export_btn: "Crea scheda mensile (Word / stampante)",
-        export_info: "Si apre una nuova finestra con la tabella. Da lì puoi stampare o salvare in PDF.",
-        clock_title: "Timbro orario (per dipendenti)",
-        clock_emp_label: "Seleziona dipendente:",
-        clock_ready: "Pronto per timbrare.",
-        clock_in_btn: "Entrata",
-        clock_out_btn: "Uscita",
-        clock_undo_btn: "Cancella ultimo timbro",
-        today_entries: "Registri di oggi:",
-        rule_text: "Regola: massimo 40 ore al mese. Il resto va nel conto ore.",
-        impressum_link: "Impressum",
-        privacy_link: "Privacy",
-        month_info: "Ore questo mese: {H} | Conto ore: {B}",
-        month_info_empty: "Ore questo mese: 0 | Conto ore: 0",
-        limit_warning: "Limite di 40h superato!",
-        delete_btn: "Cancella",
-        delete_confirm: "Cancellare questo dipendente?",
-        no_emp_text: "Nessun dipendente registrato. Il responsabile deve aggiungerne uno.",
-        clock_running: "Dipendente attualmente timbrato (da {T}).",
-        emp_name_required: "Inserisci un nome.",
-        select_emp_first: "Seleziona prima un dipendente.",
-        already_clocked_in: "Questo dipendente è già timbrato.",
-        not_clocked_in: "Questo dipendente non ha ancora timbrato.",
-        clock_in_status: "Entrata alle {T}.",
-        clock_out_status: "Uscita registrata. Ore lavorate: {H}. Totale nel mese: {S}.",
-        no_entries_to_delete: "Nessun registro da cancellare.",
-        delete_last_confirm: "Cancellare l'ultimo registro?",
-        msg_hours_line: "Mese corrente: {H} h (conto ore: {B} h)",
-        msg_hello: "Ciao {N},\n\n",
-        msg_body: "il tuo turno:\n",
-        msg_date: "Data",
-        msg_time: "Orario",
-        msg_confirm: "Per favore conferma con OK.",
-        fill_plan_fields: "Seleziona dipendente, giorno e orari.",
-        no_phone: "Per questo dipendente non è salvato alcun numero di telefono.",
-        emp_col: "Dipendente",
-        hours_col: "Ore nel mese",
-        bank_col: "Conto ore",
-        sum_col: "Totale:",
-        select_month_first: "Seleziona un mese.",
-        emp_not_found: "Dipendente non trovato.",
-        privacy_only_chef: "Le informazioni sulla privacy sono visibili solo dopo il login del responsabile.",
-        impressum_text: "Impressum: qui puoi inserire indirizzo e contatti dell'azienda."
+        't-chef-login': 'Accesso Capo',
+        't-pin-label': 'Inserire PIN:',
+        't-chef-info': 'Dopo il login si attivano le aree del capo (gestione dipendenti, turni / WhatsApp, report mensili e privacy).',
+        't-manage-emps': 'Gestione dipendenti',
+        't-emp-name-label': 'Nome del dipendente:',
+        't-emp-phone-label': 'WhatsApp / Numero di telefono (opzionale):',
+        't-add-emp': 'Aggiungi dipendente',
+        't-emp-note': 'Elenco dipendenti e ore viene salvato solo su questo dispositivo (localStorage).',
+        't-plan-whatsapp': 'Pianificazione turni & WhatsApp',
+        't-plan-choose-emp': 'Seleziona dipendente:',
+        't-date-label': 'Giorno:',
+        't-from-label': 'Dalle (ora):',
+        't-to-label': 'Alle (ora):',
+        't-show-msg': 'Mostra messaggio',
+        't-open-wa': 'Apri WhatsApp',
+        't-wa-hint': 'WhatsApp si apre con il messaggio precompilato. Decidi tu se inviarlo.',
+        't-preview-title': 'Anteprima messaggio:',
+        't-month-report': 'Report mensile (Capo)',
+        't-month-report-text': 'Panoramica di tutti i dipendenti per il mese corrente.',
+        't-print-report': 'Stampa / salva in PDF',
+        't-month-export': 'Export mensile (Word / Stampante)',
+        't-month-export-text': 'Export per dipendente e mese – ideale per il commercialista.',
+        't-export-choose-emp': 'Seleziona dipendente:',
+        't-export-month': 'Seleziona mese:',
+        't-export-btn': 'Crea foglio mensile per Word / Stampante',
+        't-stempel-title': 'Orologio presenze (Dipendenti)',
+        't-stempel-choose': 'Seleziona dipendente:',
+        't-btn-in': 'Entrata',
+        't-btn-out': 'Uscita',
+        't-btn-undo': 'Cancella ultimo registro',
+        't-rule': 'Regola: Massimo 40 ore al mese. Tutto sopra va nella banca ore.'
       }
     };
 
-    let currentLang = 'de';
-    let currentTranslations = translations[currentLang];
-
-    function applyTranslations() {
-      currentTranslations = translations[currentLang] || translations.de;
-      // textos simples
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (currentTranslations[key]) {
-          el.textContent = currentTranslations[key];
-        }
+    function setLanguage(lang) {
+      const pack = translations[lang] || translations.de;
+      Object.keys(pack).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = pack[id];
       });
-      // atualizar textos dependentes
-      updateHoursInfo();
-      updatePlanHoursInfo();
-      refreshEmployeeUI();
-      initDailyLog();
     }
-
-    // clique nas bandeiras
-    document.querySelectorAll('.lang-flag').forEach(flag => {
-      flag.addEventListener('click', () => {
-        const lang = flag.getAttribute('data-lang');
-        currentLang = lang;
-        localStorage.setItem('wt_lang', lang);
-        document.querySelectorAll('.lang-flag').forEach(f => f.classList.remove('active'));
-        flag.classList.add('active');
-        applyTranslations();
-      });
-    });
 
     // ================== INICIALIZAÇÃO ==================
-    const savedLang = localStorage.getItem('wt_lang');
-    if (savedLang && translations[savedLang]) {
-      currentLang = savedLang;
-      document.querySelectorAll('.lang-flag').forEach(f => {
-        f.classList.toggle('active', f.getAttribute('data-lang') === savedLang);
-      });
-    }
-
     loadEmployees();
     refreshEmployeeUI();
-    applyTranslations();
+    updateHoursInfo();
+    updatePlanHoursInfo();
     renderMonthlyReport();
     buildExportMonthOptions();
-    initDailyLog();
+    setLanguage('de'); // idioma inicial
   </script>
 </body>
 </html>
